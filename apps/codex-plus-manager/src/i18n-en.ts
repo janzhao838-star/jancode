@@ -1,4 +1,4 @@
-// English translations for the Codex++ manager UI, keyed by the original
+// English translations for the JanCode manager UI, keyed by the original
 // Chinese source text. Generated keys live in tools/i18n-keys.json; run
 // `node tools/i18n-verify.mjs` to confirm this dictionary covers exactly that
 // set (no missing or stale entries). See src/i18n.ts for how these are used.
@@ -28,8 +28,8 @@ export const EN_PLAIN: Record<string, string> = {
   "Codex 意外停止": "Codex stopped unexpectedly",
   "Codex 版本": "Codex version",
   "Codex CLI 路径": "Codex CLI path",
-  "Codex++ 导入": "Codex++ import",
-  "Codex++ 版本": "Codex++ version",
+  "JanCode 导入": "JanCode import",
+  "JanCode 版本": "JanCode version",
   "Codex-Dream-Skin 风格主题和换图": "Codex-Dream-Skin style themes and image replacement",
   "Codex增强": "Codex enhancements",
   "Codex增强模式": "Codex enhancement mode",
@@ -143,7 +143,7 @@ export const EN_PLAIN: Record<string, string> = {
   "项目来源：Fei-Away/Codex-Dream-Skin · 原作者 Fei-Away · MIT License · 第三方图片需自行确认授权":
     "Source: Fei-Away/Codex-Dream-Skin · Fei-Away · MIT License · Confirm third-party image rights before use",
   "运行状态": "Runtime status",
-  "配置保存在 Codex++，实时操作通过本机回环 CDP 执行": "Configuration stays in Codex++; live operations use the local loopback CDP connection",
+  "配置保存在 JanCode，实时操作通过本机回环 CDP 执行": "Configuration stays in JanCode; live operations use the local loopback CDP connection",
   "应用会保存当前图片与主题配置；恢复原始外观不会删除主题。":
     "Applying saves the current image and theme; restoring the original appearance does not delete the theme.",
   "当前状态": "Current status",
@@ -153,8 +153,8 @@ export const EN_PLAIN: Record<string, string> = {
   "Codex 原始外观": "Original Codex appearance",
   "刷新状态": "Refresh status",
   "图片与主题": "Image and theme",
-  "自定义图片会被导入 Codex++ 托管目录；主题字段与目标项目 theme.json 对齐":
-    "Custom images are imported into Codex++ managed storage; theme fields match the source theme.json.",
+  "自定义图片会被导入 JanCode 托管目录；主题字段与目标项目 theme.json 对齐":
+    "Custom images are imported into JanCode managed storage; theme fields match the source theme.json.",
   "我的主题": "My themes",
   "选择卡片只会载入草稿；需要完整切换时会保存为待应用主题。":
     "Selecting a card only loads a draft. Complete switches are saved as a pending theme.",
@@ -264,7 +264,7 @@ export const EN_PLAIN: Record<string, string> = {
   "TOML 配置体": "TOML config body",
   "Watcher 操作": "Watcher action",
   "Watcher 状态": "Watcher status",
-  "Watcher 用于保持 Codex++ 接管状态": "The watcher keeps Codex++ in control",
+  "Watcher 用于保持 JanCode 接管状态": "The watcher keeps JanCode in control",
   "Watcher 自动接管": "Watcher auto-takeover",
   "仅支持 V2 桌宠；不会修改宠物文件。将 V2 的 Computer Use 光标朝向动作映射到真实鼠标，V1 开启后安全不生效；拖拽、原生悬停或 Computer Use 活跃时自动让步。":
     "V2 pets only; pet files are never modified. Maps the V2 Computer Use cursor-look animation to the real mouse cursor. V1 pets safely remain unchanged, while dragging, native hover, and active Computer Use take priority.",
@@ -401,7 +401,7 @@ export const EN_PLAIN: Record<string, string> = {
   "供应商预设列表": "Provider preset list",
   "保存": "Save",
   "保存为默认路径": "Save as default path",
-  "保存到 Codex++ state，不改写 Zed settings。": "Saved to Codex++ state, does not modify Zed settings.",
+  "保存到 JanCode state，不改写 Zed settings。": "Saved to JanCode state, does not modify Zed settings.",
   "保存增强设置": "Save enhancement settings",
   "保存扩展项": "Save entry",
   "保存的应用路径": "Saved app path",
@@ -425,7 +425,7 @@ export const EN_PLAIN: Record<string, string> = {
   "入口管理": "Entrypoint management",
   "全选当前列表": "Select all in current list",
   "关于": "About",
-  "关于 Codex++": "About Codex++",
+  "关于 JanCode": "About JanCode",
   "关闭": "Off",
   "关闭后会停用删除、导出、插件相关和菜单位置增强。":
     "When off, disables deletion, export, plugin-related and menu placement enhancements.",
@@ -467,7 +467,7 @@ export const EN_PLAIN: Record<string, string> = {
   "包含版本、路径、设置和平台信息": "Includes version, paths, settings and platform info",
   "协议": "Protocol",
   "卸载入口": "Uninstall entrypoints",
-  "卸载时移除 Codex++ 托管数据": "Remove Codex++ managed data on uninstall",
+  "卸载时移除 JanCode 托管数据": "Remove JanCode managed data on uninstall",
   "历史会话修复": "Historical session repair",
   "历史会话修复失败，请查看错误提示后重试。": "Historical session repair failed. Check the error message and retry.",
   "历史会话修复进度": "Historical session repair progress",
@@ -491,7 +491,7 @@ export const EN_PLAIN: Record<string, string> = {
   "名称": "Name",
   "启动 Codex App 时追加到默认 CDP 参数后。留空则保持默认启动行为。":
     "Appended after the default CDP arguments when launching the Codex app. Leave empty to keep default launch behavior.",
-  "启动 Codex++": "Launch Codex++",
+  "启动 JanCode": "Launch JanCode",
   "启动任务": "Launch task",
   "启动前自动修复历史会话": "Auto-repair historical sessions before launch",
   "启动时通过本地主进程调试端口汉化 Codex 原生菜单；不修改安装包。需重启 Codex 才生效。":
@@ -512,8 +512,8 @@ export const EN_PLAIN: Record<string, string> = {
   "图片覆盖层": "Image overlay",
   "在会话列表悬停显示删除按钮，并支持撤销。": "Show a delete button on hover in the session list, with undo support.",
   "在会话列表显示导出按钮，导出带时间戳的 Markdown。": "Show an export button in the session list to export timestamped Markdown.",
-  "在 Codex 页面显示可拖动的后续建议浮层；建议由单独配置的 Stepwise API 生成。启停后需重启 Codex++ 生效。":
-    "Shows a draggable follow-up suggestion overlay in the Codex page. Suggestions are generated by a separate Stepwise API. Restart Codex++ after changing this setting.",
+  "在 Codex 页面显示可拖动的后续建议浮层；建议由单独配置的 Stepwise API 生成。启停后需重启 JanCode 生效。":
+    "Shows a draggable follow-up suggestion overlay in the Codex page. Suggestions are generated by a separate Stepwise API. Restart JanCode after changing this setting.",
   "在侧边栏会话标题前显示短 ID 和 UUIDv7 创建时间，方便定位历史会话。":
     "Show a short ID and UUIDv7 creation time before session titles in the sidebar to help locate past sessions.",
   "基础设置": "Basic settings",
@@ -543,7 +543,7 @@ export const EN_PLAIN: Record<string, string> = {
   "官方登录": "Official login",
   "官方登录模式": "Official login mode",
   "对话居中宽度": "Centered conversation width",
-  "导入 Codex++ 供应商": "Import Codex++ provider",
+  "导入 JanCode 供应商": "Import JanCode provider",
   "尚未刷新": "Not refreshed yet",
   "尚未加载推荐内容": "Recommendations not loaded yet",
   "尚未检查 Codex 应用路径。": "Codex app path not checked yet.",
@@ -582,8 +582,8 @@ export const EN_PLAIN: Record<string, string> = {
   "应用路径留空时使用已保存路径；没有保存路径时使用自动探测": "When the app path is empty, the saved path is used; with no saved path, auto-detection is used",
   "应用路径覆盖": "App path override",
   "开启": "On",
-  "开启后，通过 Codex++ 启动 Codex 前自动整理一次旧对话的归属标记。":
-    "When on, tidies up ownership tags of old conversations once before launching Codex through Codex++.",
+  "开启后，通过 JanCode 启动 Codex 前自动整理一次旧对话的归属标记。":
+    "When on, tidies up ownership tags of old conversations once before launching Codex through JanCode.",
   "强制中文界面": "Force Chinese UI",
   "强制启用 Codex App 内置 zh-CN 语言包，避免 Statsig/VPN 不通时回退英文。需重启 Codex 才能完整生效。":
     "Forces the Codex app's built-in zh-CN language pack to avoid falling back to English when Statsig/VPN is unreachable. Requires restarting Codex to fully apply.",
@@ -631,7 +631,7 @@ export const EN_PLAIN: Record<string, string> = {
   "打开项目主页": "Open project homepage",
   "扩展项": "entry",
   "批量删除会话": "Bulk delete sessions",
-  "把 Codex++ 菜单插入 Codex 顶部原生菜单栏。": "Insert the Codex++ menu into Codex's top native menu bar.",
+  "把 JanCode 菜单插入 Codex 顶部原生菜单栏。": "Insert the JanCode menu into Codex's top native menu bar.",
   "把主对话和输入框限制到固定最大宽度，适合大屏阅读。": "Constrain the main conversation and input box to a fixed max width, good for large-screen reading.",
   "投稿": "Submit",
   "拖动排序": "Drag to reorder",
@@ -654,8 +654,8 @@ export const EN_PLAIN: Record<string, string> = {
   "官方远端插件缓存": "Official remote plugin cache",
   "官方远端插件缓存进度": "Official remote plugin cache progress",
   "官方远端插件缓存修复失败，请查看错误提示后重试。": "Official remote plugin cache repair failed. Check the error message and retry.",
-  "使用 Codex++ 内置快照补齐远端插件，API 模式也可显示和安装 Product Design 插件。":
-    "Use the embedded Codex++ snapshot to add remote plugins, so API mode can also show and install the Product Design plugin.",
+  "使用 JanCode 内置快照补齐远端插件，API 模式也可显示和安装 Product Design 插件。":
+    "Use the embedded JanCode snapshot to add remote plugins, so API mode can also show and install the Product Design plugin.",
   "搜索供应商…": "Search providers…",
   "数据库": "Database",
   "新增": "Add ",
@@ -702,8 +702,8 @@ export const EN_PLAIN: Record<string, string> = {
   "未检测到": "Not detected",
   "未检测到 Codex 应用版本。": "Codex app version not detected.",
   "未发现缓存": "Cache not found",
-  "未发现本地缓存；点击按钮会从 Codex++ 内置快照释放并注册，无需官方账号预缓存。":
-    "Local cache not found. Click the button to extract and register the embedded Codex++ snapshot; no official-account pre-cache is required.",
+  "未发现本地缓存；点击按钮会从 JanCode 内置快照释放并注册，无需官方账号预缓存。":
+    "Local cache not found. Click the button to extract and register the embedded JanCode snapshot; no official-account pre-cache is required.",
   "未知": "Unknown",
   "未知作者": "Unknown author",
   "未知来源": "Unknown source",
@@ -730,8 +730,8 @@ export const EN_PLAIN: Record<string, string> = {
   "诊断供应商": "Diagnose provider",
   "检测": "Detect",
   "检测到 OPENAI 环境变量": "OPENAI environment variables detected",
-  "检测到来自网页的供应商配置导入请求，确认后会写入本机 Codex++ 管理工具。":
-    "A provider config import request from the web was detected; confirming writes it to this machine's Codex++ manager.",
+  "检测到来自网页的供应商配置导入请求，确认后会写入本机 JanCode 管理工具。":
+    "A provider config import request from the web was detected; confirming writes it to this machine's JanCode manager.",
   "概览": "Overview",
   "概览只展示关键问题，具体配置在对应页面处理": "The overview shows only key issues; specific configuration is handled on the relevant pages",
   "概览已检查": "Overview checked",
@@ -759,8 +759,8 @@ export const EN_PLAIN: Record<string, string> = {
   "正在解压并校验插件文件…": "Extracting and verifying plugin files…",
   "正在连接 openai/plugins…": "Connecting to openai/plugins…",
   "正常": "OK",
-  "此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 Codex++ 启动 Codex。":
-    "This upstream is converted to the Responses API via local 127.0.0.1:57321, which requires launching Codex from Codex++.",
+  "此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 JanCode 启动 Codex。":
+    "This upstream is converted to the Responses API via local 127.0.0.1:57321, which requires launching Codex from JanCode.",
   "此供应商会保留官方登录模式，并把请求混入当前 API Key；Codex增强仍使用兼容模式。":
     "This provider keeps official login mode and mixes the current API Key into requests; Codex enhancements stay in compatible mode.",
   "此供应商会切回官方登录模式，使用 ChatGPT 官方账号，不写入 API Key。":
@@ -841,12 +841,12 @@ export const EN_PLAIN: Record<string, string> = {
     "Aggregate requests still rotate members through the local Responses proxy; OpenAI identity lets ChatGPT Remote recognize the session.",
   "OpenAI 会话身份仅支持 Responses API；Chat Completions 不支持 ChatGPT Remote 的远程压缩。请切换协议或改回 Custom。":
     "OpenAI session identity only supports the Responses API; Chat Completions does not support ChatGPT Remote remote compaction. Switch protocol or return to Custom.",
-  "维护 Codex++ 自己的远程项目最近列表。": "Maintain Codex++'s own recent list of remote projects.",
+  "维护 JanCode 自己的远程项目最近列表。": "Maintain JanCode's own recent list of remote projects.",
   "编辑": "Edit",
   "编辑后保存列表，再切换模式时会使用新配置": "After editing, save the list; the new config is used the next time you switch modes",
   "编辑扩展项": "Edit entry",
   "缺失": "Missing",
-  "缺少 Codex++ 静默启动快捷方式时可在安装维护页修复。": "When the Codex++ silent launch shortcut is missing, repair it on the Install & Maintenance page.",
+  "缺少 JanCode 静默启动快捷方式时可在安装维护页修复。": "When the JanCode silent launch shortcut is missing, repair it on the Install & Maintenance page.",
   "缺少管理工具快捷方式时可在安装维护页修复。": "When the manager shortcut is missing, repair it on the Install & Maintenance page.",
   "聚合": "Aggregate",
   "聚合/中转": "Aggregate/relay",
@@ -963,7 +963,7 @@ export const EN_PLAIN: Record<string, string> = {
     "This provider writes only its own config.toml and skips the common config.",
   "配置": "Config",
   "配置文件": "Config file",
-  "重启 Codex++": "Restart Codex++",
+  "重启 JanCode": "Restart JanCode",
   "重新安装": "Reinstall",
   "重新生成": "Regenerate",
   "重置背景": "Reset background",
@@ -1011,8 +1011,8 @@ export const EN_PLAIN: Record<string, string> = {
   "请先创建一个 Responses API 目标供应商": "Create a Responses API target provider first",
   "添加模型路由": "Add model route",
   "单模型路由需要填写模型名称和目标供应商。": "Each model route requires a model name and target provider.",
-  "仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 Codex++ 启动。":
-    "Applies only while this provider is active. It exactly matches the model name and uses the target provider's URL and key. The target must use the Responses API, and Codex must be launched through Codex++.",
+  "仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 JanCode 启动。":
+    "Applies only while this provider is active. It exactly matches the model name and uses the target provider's URL and key. The target must use the Responses API, and Codex must be launched through JanCode.",
   "Grok 配置": "Grok configuration",
   "正在读取本机 Grok 配置": "Reading local Grok configuration",
   "重新读取": "Reload",
@@ -1175,8 +1175,8 @@ export const EN_TEMPLATE: Record<string, string> = {
   "{0} 状态": "{0} status",
   "{0} 设置": "{0} settings",
   "{0} 个已保存": "{0} saved",
-  "Grok 里所有由 Codex++ 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。":
-    "Every model table managed by Codex++ in Grok will be replaced wholesale by the model list of provider \"{0}\" (unmanaged fields such as [ui] and web_search are kept). The previous config is backed up first.",
+  "Grok 里所有由 JanCode 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。":
+    "Every model table managed by JanCode in Grok will be replaced wholesale by the model list of provider \"{0}\" (unmanaged fields such as [ui] and web_search are kept). The previous config is backed up first.",
   "已新增供应商「{0}」，填好模型列表后点「应用到 Grok」。":
     "Added provider \"{0}\"; fill in its model list and click Apply to Grok.",
   "供应商「{0}」已保存。": "Provider \"{0}\" saved.",
@@ -1192,7 +1192,7 @@ export const EN_TEMPLATE: Record<string, string> = {
   "{0}（{1}）": "{0} ({1})",
   "{0} · {1} 个成员": "{0} · {1} member(s)",
   "{0} 个": "{0}",
-  "{0} 个 Codex++ 可识别项目，默认策略：{1}": "{0} project(s) recognized by Codex++, default strategy: {1}",
+  "{0} 个 JanCode 可识别项目，默认策略：{1}": "{0} project(s) recognized by JanCode, default strategy: {1}",
   "{0} 个供应商": "{0} provider(s)",
   "{0} 个供应商配置；可拖动排序，点编辑进入详情": "{0} provider configuration(s); drag to reorder, click edit for details",
   "{0} 个市场脚本，已安装 {1} 个，本地整体 {2}": "{0} marketplace script(s), {1} installed, local overall {2}",
@@ -1221,8 +1221,8 @@ export const EN_TEMPLATE: Record<string, string> = {
   "检测到 TUN 模式已开启，请在 Clash Verge Rev 中关闭。配置：{0}":
     "TUN mode is enabled. Disable it in Clash Verge Rev. Configuration: {0}",
   "TUN 模式已关闭。配置：{0}": "TUN mode is disabled. Configuration: {0}",
-  "检测到代理环境变量：{0}。请清理后重新启动 Codex++。":
-    "Proxy environment variables detected: {0}. Remove them and restart Codex++.",
+  "检测到代理环境变量：{0}。请清理后重新启动 JanCode。":
+    "Proxy environment variables detected: {0}. Remove them and restart JanCode.",
   "检测到可能干扰供应商配置的 .env 文件：{0}": "A .env file that may interfere with provider configuration was found: {0}",
   "未发现 .env 文件：{0}": "No .env file found: {0}",
   "官方登录已就绪：{0}，会混入当前 API Key。": "Official login ready: {0}, the current API Key will be mixed in.",

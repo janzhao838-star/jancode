@@ -1,10 +1,11 @@
 use std::path::PathBuf;
 use std::sync::{Mutex, OnceLock};
 
-const APP_STATE_DIR: &str = ".codex-session-delete";
+// ★ JanCode 使用独立状态目录，与上游 Codex++ 的 ~/.codex-session-delete 互不干扰
+const APP_STATE_DIR: &str = ".jancode";
 const SETTINGS_FILE: &str = "settings.json";
 const LATEST_STATUS_FILE: &str = "latest-status.json";
-const DIAGNOSTIC_LOG_FILE: &str = "codex-plus.log";
+const DIAGNOSTIC_LOG_FILE: &str = "jancode.log";
 const PENDING_PROVIDER_IMPORT_FILE: &str = "pending-provider-import.json";
 const PENDING_SESSION_SHARE_FILE: &str = "pending-session-share.txt";
 const PENDING_REMOTE_CONTROL_RECOVERY_FILE: &str = "pending-remote-control-recovery.json";
@@ -105,48 +106,48 @@ mod tests {
         let _guard = settings_path_test_guard();
         let path = default_settings_path();
 
-        assert!(path.ends_with(".codex-session-delete/settings.json"));
+        assert!(path.ends_with(".jancode/settings.json"));
     }
 
     #[test]
     fn default_latest_status_path_uses_app_state_directory() {
         let path = default_latest_status_path();
 
-        assert!(path.ends_with(".codex-session-delete/latest-status.json"));
+        assert!(path.ends_with(".jancode/latest-status.json"));
     }
 
     #[test]
     fn default_diagnostic_log_path_uses_app_state_directory() {
         let path = default_diagnostic_log_path();
 
-        assert!(path.ends_with(".codex-session-delete/codex-plus.log"));
+        assert!(path.ends_with(".jancode/jancode.log"));
     }
 
     #[test]
     fn default_pending_provider_import_path_uses_app_state_directory() {
         let path = default_pending_provider_import_path();
 
-        assert!(path.ends_with(".codex-session-delete/pending-provider-import.json"));
+        assert!(path.ends_with(".jancode/pending-provider-import.json"));
     }
 
     #[test]
     fn default_pending_session_share_path_uses_app_state_directory() {
         let path = default_pending_session_share_path();
 
-        assert!(path.ends_with(".codex-session-delete/pending-session-share.txt"));
+        assert!(path.ends_with(".jancode/pending-session-share.txt"));
     }
 
     #[test]
     fn default_pending_remote_control_recovery_path_uses_app_state_directory() {
         let path = default_pending_remote_control_recovery_path();
 
-        assert!(path.ends_with(".codex-session-delete/pending-remote-control-recovery.json"));
+        assert!(path.ends_with(".jancode/pending-remote-control-recovery.json"));
     }
 
     #[test]
     fn default_pending_manager_navigation_path_uses_app_state_directory() {
         let path = default_pending_manager_navigation_path();
 
-        assert!(path.ends_with(".codex-session-delete/pending-manager-navigation.json"));
+        assert!(path.ends_with(".jancode/pending-manager-navigation.json"));
     }
 }

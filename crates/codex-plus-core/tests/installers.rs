@@ -8,24 +8,25 @@ use codex_plus_core::install::{
 fn windows_entrypoint_plan_contains_silent_and_manager_entrypoints() {
     let options = InstallOptions {
         install_root: Some("C:/Users/A/Desktop".into()),
-        launcher_path: Some("C:/Tools/codex-plus-plus.exe".into()),
-        manager_path: Some("C:/Tools/codex-plus-plus-manager.exe".into()),
+        launcher_path: Some("C:/Tools/jancode.exe".into()),
+        manager_path: Some("C:/Tools/jancode-manager.exe".into()),
         remove_owned_data: false,
     };
 
     let plan = build_windows_entrypoint_plan(&options);
 
-    assert!(plan.silent_shortcut.ends_with("Codex++.lnk"));
-    assert!(plan.manager_shortcut.ends_with("Codex++ 管理工具.lnk"));
-    assert_eq!(plan.launcher_path, "C:/Tools/codex-plus-plus.exe");
-    assert_eq!(plan.manager_path, "C:/Tools/codex-plus-plus-manager.exe");
-    assert_eq!(plan.silent_icon_path, "C:/Tools/codex-plus-plus.exe");
+    assert!(plan.silent_shortcut.ends_with("JanCode.lnk"));
+    assert!(plan.manager_shortcut.ends_with("JanCode 管理工具.lnk"));
+    assert_eq!(plan.launcher_path, "C:/Tools/jancode.exe");
+    assert_eq!(plan.manager_path, "C:/Tools/jancode-manager.exe");
+    assert_eq!(plan.silent_icon_path, "C:/Tools/jancode.exe");
     assert_eq!(
         plan.manager_icon_path,
-        "C:/Tools/codex-plus-plus-manager.exe"
+        "C:/Tools/jancode-manager.exe"
     );
-    assert_eq!(plan.uninstall_key, "CodexPlusPlus");
-    assert_eq!(plan.legacy_uninstall_key, "Codex++");
+    assert_eq!(plan.uninstall_key, "JanCode");
+    // JanCode 刻意使用独立的 legacy 键，避免卸载时误删上游 Codex++ 的注册表登记
+    assert_eq!(plan.legacy_uninstall_key, "JanCodeLegacy");
     assert_eq!(
         plan.uninstaller_path.replace('\\', "/"),
         "C:/Tools/uninstall.exe"
@@ -40,7 +41,7 @@ fn windows_entrypoint_plan_contains_silent_and_manager_entrypoints() {
     );
     assert_ne!(
         plan.uninstall_command,
-        "\"C:/Tools/codex-plus-plus-manager.exe\""
+        "\"C:/Tools/jancode-manager.exe\""
     );
 }
 
@@ -55,8 +56,8 @@ fn windows_entrypoint_plan_can_request_owned_data_removal_without_shell_script()
 
     let plan = build_windows_entrypoint_plan(&options);
 
-    assert!(plan.silent_shortcut.ends_with("Codex++.lnk"));
-    assert!(plan.manager_shortcut.ends_with("Codex++ 管理工具.lnk"));
+    assert!(plan.silent_shortcut.ends_with("JanCode.lnk"));
+    assert!(plan.manager_shortcut.ends_with("JanCode 管理工具.lnk"));
     assert!(plan.remove_owned_data);
 }
 
@@ -64,45 +65,45 @@ fn windows_entrypoint_plan_can_request_owned_data_removal_without_shell_script()
 fn macos_bundle_metadata_contains_silent_and_manager_apps() {
     let options = InstallOptions {
         install_root: Some("/Applications".into()),
-        launcher_path: Some("/opt/Codex++/codex-plus-plus".into()),
-        manager_path: Some("/opt/Codex++/codex-plus-plus-manager".into()),
+        launcher_path: Some("/opt/JanCode/jancode".into()),
+        manager_path: Some("/opt/JanCode/jancode-manager".into()),
         remove_owned_data: false,
     };
 
     let silent = build_macos_app_bundle(&options, false);
     let manager = build_macos_app_bundle(&options, true);
 
-    assert!(silent.app_path.ends_with("Codex++.app"));
-    assert!(manager.app_path.ends_with("Codex++ 管理工具.app"));
-    assert!(silent.info_plist.contains("<string>Codex++</string>"));
+    assert!(silent.app_path.ends_with("JanCode.app"));
+    assert!(manager.app_path.ends_with("JanCode 管理工具.app"));
+    assert!(silent.info_plist.contains("<string>JanCode</string>"));
     assert!(
         manager
             .info_plist
-            .contains("<string>Codex++ 管理工具</string>")
+            .contains("<string>JanCode 管理工具</string>")
     );
     assert!(manager.info_plist.contains("<string>dreamskin</string>"));
     assert!(manager.info_plist.contains("<string>codexplusplus</string>"));
     assert!(!silent.info_plist.contains("<string>dreamskin</string>"));
     assert_eq!(
         silent.binary_target_name.as_deref(),
-        Some("codex-plus-plus")
+        Some("jancode")
     );
     assert_eq!(
         manager.binary_target_name.as_deref(),
-        Some("codex-plus-plus-manager")
+        Some("jancode-manager")
     );
-    assert!(silent.launch_script.contains("$DIR/codex-plus-plus"));
+    assert!(silent.launch_script.contains("$DIR/jancode"));
     assert!(
         manager
             .launch_script
-            .contains("$DIR/codex-plus-plus-manager")
+            .contains("$DIR/jancode-manager")
     );
 }
 
 #[test]
 fn installer_exports_expected_two_entrypoint_names() {
-    assert_eq!(shortcut_names(), ("Codex++.lnk", "Codex++ 管理工具.lnk"));
-    assert_eq!(app_bundle_names(), ("Codex++.app", "Codex++ 管理工具.app"));
+    assert_eq!(shortcut_names(), ("JanCode.lnk", "JanCode 管理工具.lnk"));
+    assert_eq!(app_bundle_names(), ("JanCode.app", "JanCode 管理工具.app"));
 }
 
 #[test]
@@ -116,26 +117,26 @@ fn macos_dmg_includes_applications_shortcut_for_drag_install() {
 #[test]
 fn companion_binary_path_resolves_macos_silent_app_next_to_manager_app() {
     let manager_exe = std::path::Path::new(
-        "/Applications/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager",
+        "/Applications/JanCode 管理工具.app/Contents/MacOS/JanCodeManager",
     );
 
     let companion = companion_binary_path_from_exe(manager_exe, SILENT_BINARY);
 
     assert_eq!(
         companion,
-        std::path::PathBuf::from("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus")
+        std::path::PathBuf::from("/Applications/JanCode.app/Contents/MacOS/JanCode")
     );
     assert_ne!(
         companion,
         std::path::PathBuf::from(
-            "/Applications/Codex++ 管理工具.app/Contents/MacOS/codex-plus-plus"
+            "/Applications/JanCode 管理工具.app/Contents/MacOS/jancode"
         )
     );
 }
 
 #[test]
 fn companion_binary_path_resolves_macos_manager_app_next_to_silent_app() {
-    let silent_exe = std::path::Path::new("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus");
+    let silent_exe = std::path::Path::new("/Applications/JanCode.app/Contents/MacOS/JanCode");
 
     let companion =
         companion_binary_path_from_exe(silent_exe, codex_plus_core::install::MANAGER_BINARY);
@@ -143,7 +144,7 @@ fn companion_binary_path_resolves_macos_manager_app_next_to_silent_app() {
     assert_eq!(
         companion,
         std::path::PathBuf::from(
-            "/Applications/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager"
+            "/Applications/JanCode 管理工具.app/Contents/MacOS/JanCodeManager"
         )
     );
 }
@@ -151,10 +152,10 @@ fn companion_binary_path_resolves_macos_manager_app_next_to_silent_app() {
 #[test]
 fn macos_companion_launch_uses_bundle_ids_from_app_translocation() {
     let manager_exe = std::path::Path::new(
-        "/private/var/folders/x/AppTranslocation/manager-id/d/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager",
+        "/private/var/folders/x/AppTranslocation/manager-id/d/JanCode 管理工具.app/Contents/MacOS/JanCodeManager",
     );
     let silent_exe = std::path::Path::new(
-        "/private/var/folders/x/AppTranslocation/silent-id/d/Codex++.app/Contents/MacOS/CodexPlusPlus",
+        "/private/var/folders/x/AppTranslocation/silent-id/d/JanCode.app/Contents/MacOS/JanCode",
     );
 
     assert_eq!(
@@ -172,7 +173,7 @@ fn macos_companion_launch_uses_bundle_ids_from_app_translocation() {
 
 #[test]
 fn macos_companion_launch_keeps_bare_binary_development_mode() {
-    let manager_exe = std::path::Path::new("/tmp/target/debug/codex-plus-plus-manager");
+    let manager_exe = std::path::Path::new("/tmp/target/debug/jancode-manager");
 
     assert_eq!(
         macos_companion_bundle_identifier_from_exe(manager_exe, SILENT_BINARY),
@@ -185,9 +186,9 @@ fn macos_companion_launch_keeps_bare_binary_development_mode() {
 fn macos_companion_path_falls_back_to_workspace_release_launcher() {
     let root = tempfile::tempdir().unwrap();
     let bundle_exe = root.path().join(
-        "target/release/bundle/macos/Codex++ Manager.app/Contents/MacOS/codex-plus-plus-manager",
+        "target/release/bundle/macos/JanCode Manager.app/Contents/MacOS/jancode-manager",
     );
-    let release_launcher = root.path().join("target/release/codex-plus-plus");
+    let release_launcher = root.path().join("target/release/jancode");
     std::fs::create_dir_all(bundle_exe.parent().unwrap()).unwrap();
     std::fs::create_dir_all(release_launcher.parent().unwrap()).unwrap();
     std::fs::write(&bundle_exe, b"manager").unwrap();
@@ -203,9 +204,9 @@ fn macos_companion_path_falls_back_to_workspace_release_launcher() {
 fn macos_bundle_does_not_wrap_the_bundle_executable_in_itself() {
     let options = InstallOptions {
         install_root: Some("/Applications".into()),
-        launcher_path: Some("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus".into()),
+        launcher_path: Some("/Applications/JanCode.app/Contents/MacOS/JanCode".into()),
         manager_path: Some(
-            "/Applications/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager".into(),
+            "/Applications/JanCode 管理工具.app/Contents/MacOS/JanCodeManager".into(),
         ),
         remove_owned_data: false,
     };
@@ -216,20 +217,20 @@ fn macos_bundle_does_not_wrap_the_bundle_executable_in_itself() {
     assert_eq!(
         silent.binary_source,
         Some(std::path::PathBuf::from(
-            "/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus"
+            "/Applications/JanCode.app/Contents/MacOS/JanCode"
         ))
     );
     assert_eq!(
         manager.binary_source,
         Some(std::path::PathBuf::from(
-            "/Applications/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager"
+            "/Applications/JanCode 管理工具.app/Contents/MacOS/JanCodeManager"
         ))
     );
-    assert!(silent.launch_script.contains("$DIR/codex-plus-plus"));
+    assert!(silent.launch_script.contains("$DIR/jancode"));
     assert!(
         manager
             .launch_script
-            .contains("$DIR/codex-plus-plus-manager")
+            .contains("$DIR/jancode-manager")
     );
 }
 

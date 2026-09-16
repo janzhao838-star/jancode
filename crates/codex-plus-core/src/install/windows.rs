@@ -5,9 +5,13 @@ use super::{
     install_root_or_default, option_or_current_exe,
 };
 
-const UNINSTALL_SUBKEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus";
+const UNINSTALL_SUBKEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\JanCode";
+/// ★ 刻意不指向上游 Codex++ 的注册表项：JanCode 与 Codex++ 可能同时安装，
+/// 卸载/安装 JanCode 不应删除另一个产品的卸载登记。保留该常量仅为将来
+/// JanCode 自身旧版键迁移预留（当前写入的是一个不会存在的占位键）。
 const LEGACY_UNINSTALL_SUBKEY: &str =
-    r"Software\Microsoft\Windows\CurrentVersion\Uninstall\Codex++";
+    r"Software\Microsoft\Windows\CurrentVersion\Uninstall\JanCodeLegacy";
+/// URL 协议与上游保持一致（社区互操作标识，见 install/mod.rs 注释）
 const URL_PROTOCOL_SUBKEY: &str = r"Software\Classes\codexplusplus";
 const DREAM_SKIN_URL_PROTOCOL_SUBKEY: &str = r"Software\Classes\dreamskin";
 
@@ -43,11 +47,11 @@ pub fn build_windows_entrypoint_plan(options: &InstallOptions) -> WindowsEntrypo
     let quiet_uninstall_command = format!("{uninstall_command} /S");
     WindowsEntrypointPlan {
         silent_shortcut: install_root
-            .join("Codex++.lnk")
+            .join("JanCode.lnk")
             .to_string_lossy()
             .to_string(),
         manager_shortcut: install_root
-            .join("Codex++ 管理工具.lnk")
+            .join("JanCode 管理工具.lnk")
             .to_string_lossy()
             .to_string(),
         install_root: install_root.to_string_lossy().to_string(),
@@ -59,8 +63,8 @@ pub fn build_windows_entrypoint_plan(options: &InstallOptions) -> WindowsEntrypo
         uninstaller_path: uninstaller_path.to_string_lossy().to_string(),
         uninstall_command,
         quiet_uninstall_command,
-        uninstall_key: "CodexPlusPlus".to_string(),
-        legacy_uninstall_key: "Codex++".to_string(),
+        uninstall_key: "JanCode".to_string(),
+        legacy_uninstall_key: "JanCodeLegacy".to_string(),
         remove_owned_data: options.remove_owned_data,
     }
 }
@@ -73,13 +77,13 @@ pub fn install_shortcuts(options: &InstallOptions) -> anyhow::Result<()> {
     create_entrypoint_shortcut(
         PathBuf::from(&plan.silent_shortcut),
         PathBuf::from(&plan.launcher_path),
-        "Launch Codex++ silently",
+        "Launch JanCode silently",
         PathBuf::from(&plan.silent_icon_path),
     )?;
     create_entrypoint_shortcut(
         PathBuf::from(&plan.manager_shortcut),
         PathBuf::from(&plan.manager_path),
-        "Open Codex++ management tool",
+        "Open JanCode management tool",
         PathBuf::from(&plan.manager_icon_path),
     )?;
     register_url_protocol(&plan.manager_path)?;
@@ -155,9 +159,9 @@ fn write_uninstall_registration(plan: &WindowsEntrypointPlan) -> anyhow::Result<
         .to_string_lossy()
         .to_string();
     for (name, value) in [
-        ("DisplayName", "Codex++".to_string()),
+        ("DisplayName", "JanCode".to_string()),
         ("DisplayVersion", crate::version::VERSION.to_string()),
-        ("Publisher", "BigPizzaV3".to_string()),
+        ("Publisher", "janzhao".to_string()),
         ("DisplayIcon", plan.manager_icon_path.clone()),
         ("InstallLocation", install_location),
         ("UninstallString", plan.uninstall_command.clone()),
@@ -172,7 +176,7 @@ fn write_uninstall_registration(plan: &WindowsEntrypointPlan) -> anyhow::Result<
 fn register_url_protocol(manager_path: &str) -> anyhow::Result<()> {
     register_url_protocol_key(
         URL_PROTOCOL_SUBKEY,
-        "URL:Codex++ Import Protocol",
+        "URL:JanCode Import Protocol",
         manager_path,
     )?;
     register_url_protocol_key(
@@ -202,8 +206,8 @@ fn default_icon_path() -> PathBuf {
     std::env::current_exe()
         .ok()
         .and_then(|path| path.parent().map(Path::to_path_buf))
-        .map(|path| path.join("codex-plus-plus.ico"))
-        .unwrap_or_else(|| PathBuf::from("codex-plus-plus.ico"))
+        .map(|path| path.join("jancode.ico"))
+        .unwrap_or_else(|| PathBuf::from("jancode.ico"))
 }
 
 #[allow(dead_code)]

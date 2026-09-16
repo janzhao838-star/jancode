@@ -7,13 +7,25 @@ use serde::{Deserialize, Serialize};
 pub mod macos;
 pub mod windows;
 
-pub const SILENT_NAME: &str = "Codex++";
-pub const MANAGER_NAME: &str = "Codex++ 管理工具";
-pub const SILENT_BINARY: &str = "codex-plus-plus";
-pub const MACOS_SILENT_EXECUTABLE: &str = "CodexPlusPlus";
-pub const MANAGER_BINARY: &str = "codex-plus-plus-manager";
-pub const SILENT_BUNDLE_ID: &str = "com.bigpizzav3.codexplusplus";
-pub const MANAGER_BUNDLE_ID: &str = "com.bigpizzav3.codexplusplus.manager";
+// ─────────────────────────────────────────────────────────────
+//  JanCode 品牌常量（基于上游 CodexPlusPlus AGPL-3.0 定制重命名）
+//  改这里即可整体切换应用名、可执行名与 macOS Bundle ID。
+// ─────────────────────────────────────────────────────────────
+pub const SILENT_NAME: &str = "JanCode";
+pub const MANAGER_NAME: &str = "JanCode 管理工具";
+pub const SILENT_BINARY: &str = "jancode";
+pub const MACOS_SILENT_EXECUTABLE: &str = "JanCode";
+pub const MANAGER_BINARY: &str = "jancode-manager";
+pub const MACOS_MANAGER_EXECUTABLE: &str = "JanCodeManager";
+pub const SILENT_BUNDLE_ID: &str = "com.janzhao.jancode";
+pub const MANAGER_BUNDLE_ID: &str = "com.janzhao.jancode.manager";
+/// 内部图标资源名（随应用一起安装到 Resources）
+pub const ICON_FILE_NAME: &str = "jancode.png";
+/// 自定义 URL 协议。★ 刻意保持与上游一致：这两个 scheme 是与 Codex++ 社区
+/// （会话分享站点、DreamSkin 皮肤市场）互操作的标识，不是用户可见品牌。
+/// 改成 jancode:// 会让社区分享链接和皮肤市场链接全部失效。
+pub const URL_SCHEME_MAIN: &str = "codexplusplus";
+pub const URL_SCHEME_SKIN: &str = "dreamskin";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
@@ -77,11 +89,11 @@ impl ShortcutState {
 }
 
 pub fn shortcut_names() -> (&'static str, &'static str) {
-    ("Codex++.lnk", "Codex++ 管理工具.lnk")
+    ("JanCode.lnk", "JanCode 管理工具.lnk")
 }
 
 pub fn app_bundle_names() -> (&'static str, &'static str) {
-    ("Codex++.app", "Codex++ 管理工具.app")
+    ("JanCode.app", "JanCode 管理工具.app")
 }
 
 pub fn inspect_entrypoints() -> EntryPointState {
@@ -194,7 +206,7 @@ fn platform_install(options: &InstallOptions) -> anyhow::Result<()> {
     #[cfg(not(any(windows, target_os = "macos")))]
     {
         let _ = options;
-        anyhow::bail!("当前平台暂不支持安装 Codex++ 入口")
+        anyhow::bail!("当前平台暂不支持安装 JanCode 入口")
     }
 }
 
@@ -212,7 +224,7 @@ fn platform_uninstall(options: &InstallOptions) -> anyhow::Result<()> {
     #[cfg(not(any(windows, target_os = "macos")))]
     {
         let _ = options;
-        anyhow::bail!("当前平台暂不支持卸载 Codex++ 入口")
+        anyhow::bail!("当前平台暂不支持卸载 JanCode 入口")
     }
 }
 
@@ -396,7 +408,7 @@ fn macos_companion_binary_from_exe(exe: &Path, binary: &str) -> Option<PathBuf> 
             return Some(macos_preferred_bundle_binary(
                 exe,
                 SILENT_BINARY,
-                "CodexPlusPlus",
+                MACOS_SILENT_EXECUTABLE,
             ));
         }
         let macos = applications_dir
@@ -408,7 +420,7 @@ fn macos_companion_binary_from_exe(exe: &Path, binary: &str) -> Option<PathBuf> 
                 .join(SILENT_BINARY)
                 .exists()
                 .then(|| macos.join(SILENT_BINARY))
-                .unwrap_or_else(|| macos.join("CodexPlusPlus")),
+                .unwrap_or_else(|| macos.join(MACOS_SILENT_EXECUTABLE)),
         );
     }
     if binary == MANAGER_BINARY {
@@ -416,7 +428,7 @@ fn macos_companion_binary_from_exe(exe: &Path, binary: &str) -> Option<PathBuf> 
             return Some(macos_preferred_bundle_binary(
                 exe,
                 MANAGER_BINARY,
-                "CodexPlusPlusManager",
+                MACOS_MANAGER_EXECUTABLE,
             ));
         }
         let macos = applications_dir
@@ -428,7 +440,7 @@ fn macos_companion_binary_from_exe(exe: &Path, binary: &str) -> Option<PathBuf> 
                 .join(MANAGER_BINARY)
                 .exists()
                 .then(|| macos.join(MANAGER_BINARY))
-                .unwrap_or_else(|| macos.join("CodexPlusPlusManager")),
+                .unwrap_or_else(|| macos.join(MACOS_MANAGER_EXECUTABLE)),
         );
     }
     None

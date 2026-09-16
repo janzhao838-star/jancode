@@ -3187,7 +3187,7 @@ fn create_backup(
             "createdAt": chrono::Utc::now().to_rfc3339(),
             "dbFiles": db_files,
             "changedSessionFiles": changes.len(),
-            "managedBy": "Codex++ provider sync"
+            "managedBy": "JanCode provider sync"
         }))?,
     )?;
     Ok(backup_dir)
@@ -3215,7 +3215,7 @@ fn create_session_index_cleanup_backup(
         "createdAt": chrono::Utc::now().to_rfc3339(),
         "snapshotSha256": plan.snapshot_sha256,
         "prunedSessionIndexEntries": removed_entries,
-        "managedBy": "Codex++ provider sync"
+        "managedBy": "JanCode provider sync"
     }))
     .map_err(|error| cleanup_apply_error(error, Some(backup_dir.clone())))?;
     fs::write(backup_dir.join("metadata.json"), metadata)
@@ -4747,7 +4747,9 @@ fn prune_backups(home: &Path) -> anyhow::Result<()> {
         let Ok(value) = serde_json::from_str::<Value>(&text) else {
             continue;
         };
-        if value.get("managedBy").and_then(Value::as_str) == Some("Codex++ provider sync") {
+        // ★ 兼容上游 Codex++ 写下的旧标记，保证历史备份仍能被纳入轮转清理
+        let managed_by = value.get("managedBy").and_then(Value::as_str);
+        if matches!(managed_by, Some("JanCode provider sync") | Some("Codex++ provider sync")) {
             managed.push(path);
         }
     }

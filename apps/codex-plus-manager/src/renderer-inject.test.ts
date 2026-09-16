@@ -157,8 +157,8 @@ describe("renderer injection header compatibility", () => {
   it("adds the session copy shortcut through the native fork action", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
-    assert.match(renderer, /原地复制会话 - Codex\+\+/);
-    assert.match(renderer, /createSessionMoreMenuItem\("原地复制会话 - Codex\+\+"/);
+    assert.match(renderer, /原地复制会话 - JanCode/);
+    assert.match(renderer, /createSessionMoreMenuItem\("原地复制会话 - JanCode"/);
     assert.match(renderer, /getAttribute\("aria-label"\)[\s\S]*聊天操作/);
     assert.match(renderer, /从这里创建聊天分支/);
     assert.match(renderer, /data-app-action-sidebar-thread-selected/);
@@ -200,7 +200,7 @@ describe("renderer injection header compatibility", () => {
     assert.match(renderer, /Codex 未能生成新名称/);
   });
 
-  it("removes the legacy Codex++ top-bar entry", async () => {
+  it("removes the legacy JanCode top-bar entry", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.doesNotMatch(renderer, /function installCodexPlusMenu\(\)/);
@@ -208,7 +208,7 @@ describe("renderer injection header compatibility", () => {
     assert.doesNotMatch(renderer, /codex-plus-trigger/);
   });
 
-  it("places Codex++ in the native sidebar and opens a main-content page", async () => {
+  it("places JanCode in the native sidebar and opens a main-content page", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /codexPlusSidebarNavId\s*=\s*"codex-plus-sidebar-nav"/);
@@ -231,7 +231,7 @@ describe("renderer injection header compatibility", () => {
     assert.match(renderer, /document\.querySelectorAll\(`#\$\{codexPlusMenuId\}/);
   });
 
-  it("does not install Codex++ UI in embedded browser documents", async () => {
+  it("does not install JanCode UI in embedded browser documents", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /window\.top\s*!==\s*window/);

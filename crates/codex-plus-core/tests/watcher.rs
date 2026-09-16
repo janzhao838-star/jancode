@@ -51,23 +51,23 @@ fn watcher_enable_and_disable_toggle_flag() {
 
 #[test]
 fn watcher_install_plan_registers_rust_launcher_at_logon() {
-    let plan = build_watcher_install_plan("C:/Tools/codex-plus-plus.exe".into(), 9333);
+    let plan = build_watcher_install_plan("C:/Tools/jancode.exe".into(), 9333);
 
-    assert_eq!(plan.run_value_name, "CodexPlusPlusWatcher");
+    assert_eq!(plan.run_value_name, "JanCodeWatcher");
     assert_eq!(
         plan.run_value,
-        "\"C:/Tools/codex-plus-plus.exe\" --debug-port 9333"
+        "\"C:/Tools/jancode.exe\" --debug-port 9333"
     );
-    assert_eq!(plan.shortcut_name, "CodexPlusPlusWatcher.lnk");
-    assert_eq!(plan.shortcut_target, "C:/Tools/codex-plus-plus.exe");
+    assert_eq!(plan.shortcut_name, "JanCodeWatcher.lnk");
+    assert_eq!(plan.shortcut_target, "C:/Tools/jancode.exe");
     assert_eq!(plan.shortcut_arguments, "--debug-port 9333");
 }
 
 #[test]
 fn spawn_launcher_command_points_to_silent_binary_only() {
-    let command = build_spawn_launcher_command("C:/Tools/codex-plus-plus.exe", 9444);
+    let command = build_spawn_launcher_command("C:/Tools/jancode.exe", 9444);
 
-    assert_eq!(command[0], "C:/Tools/codex-plus-plus.exe");
+    assert_eq!(command[0], "C:/Tools/jancode.exe");
     assert!(command.contains(&"--debug-port".to_string()));
     assert!(command.contains(&"9444".to_string()));
     assert!(!command.iter().any(|part| part.contains("manager")));
@@ -117,11 +117,11 @@ fn codex_process_filter_keeps_chatgpt_desktop_package_processes() {
 #[test]
 fn launcher_process_filter_protects_current_process_ancestry() {
     let processes = [
-        (10, 0, "codex-plus-plus.exe"),
-        (20, 10, "codex-plus-plus.exe"),
-        (30, 20, "codex-plus-plus.exe"),
-        (40, 10, "codex-plus-plus.exe"),
-        (50, 10, "codex-plus-plus-manager.exe"),
+        (10, 0, "jancode.exe"),
+        (20, 10, "jancode.exe"),
+        (30, 20, "jancode.exe"),
+        (40, 10, "jancode.exe"),
+        (50, 10, "jancode-manager.exe"),
     ];
 
     assert_eq!(filter_killable_launcher_processes(processes, 30), vec![40]);
@@ -131,7 +131,7 @@ fn launcher_process_filter_protects_current_process_ancestry() {
 fn macos_launcher_process_names_cover_development_and_packaged_binaries() {
     assert_eq!(
         macos_launcher_process_names(),
-        ["codex-plus-plus", "CodexPlusPlus"]
+        ["jancode", "JanCode"]
     );
 }
 
@@ -297,9 +297,9 @@ fn find_codex_processes_ignores_unrelated_processes() {
         WindowsProcessInfo {
             process_id: 20,
             parent_process_id: 0,
-            exe_file: "codex-plus-plus.exe".to_string(),
+            exe_file: "jancode.exe".to_string(),
             executable_path: Some(std::path::PathBuf::from(
-                r"D:\Programs\Codex++\codex-plus-plus.exe",
+                r"D:\Programs\JanCode\jancode.exe",
             )),
         },
     ];

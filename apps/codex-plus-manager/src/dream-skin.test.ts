@@ -248,7 +248,7 @@ describe("dream skin theme helpers", () => {
     assert.match(source, /DreamSkinUnsavedDialog/);
     assert.match(source, /pendingDreamSkinRestart/);
     assert.match(source, /重启并应用/);
-    assert.doesNotMatch(source, /当前 Codex 无法实时切换完整主题，需要重启 Codex\+\+。是否立即重启/);
+    assert.doesNotMatch(source, /当前 Codex 无法实时切换完整主题，需要重启 JanCode。是否立即重启/);
   });
 
   it("restores the original appearance as pending without reloading or restarting Codex", async () => {
@@ -334,6 +334,6 @@ describe("dream skin theme helpers", () => {
     const assetProtocol = config.app?.security?.assetProtocol;
 
     assert.equal(assetProtocol?.enable, true);
-    assert.deepEqual(assetProtocol?.scope, ["$HOME/.codex-session-delete/dream-skin/**"]);
+    assert.deepEqual(assetProtocol?.scope, ["$HOME/.jancode/dream-skin/**"]);
   });
 });

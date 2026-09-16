@@ -427,7 +427,7 @@ where
                     return error.context(format!(
                         "协议代理端口 {helper_port} 被其他进程占用，等待 {} 秒后仍未释放。\
                          该端口写在 config.toml 的 base_url 里，不能自动改用其他端口；\
-                         请退出仍在运行的 Codex++ 或占用该端口的程序后重试。",
+                         请退出仍在运行的 JanCode 或占用该端口的程序后重试。",
                         bind_retry_timeout_ms / 1000
                     ));
                 }
@@ -459,7 +459,7 @@ where
             } else {
                 let degraded = launch_status(
                     "running_degraded",
-                    "Codex launched; Codex++ enhancements are still waiting for the page bridge.",
+                    "Codex launched; JanCode enhancements are still waiting for the page bridge.",
                     debug_port,
                     helper_port,
                     &app_dir,
@@ -473,7 +473,7 @@ where
         if !settings.enhancements_enabled || !injection_degraded {
             let status = launch_status(
                 "running",
-                "Codex++ launcher ready",
+                "JanCode launcher ready",
                 debug_port,
                 helper_port,
                 &app_dir,
@@ -549,7 +549,7 @@ fn start_native_menu_localizer(inspector_port: u16) {
 #[cfg(windows)]
 fn apply_codexplusplus_window_icon_after_launch(process_id: u32) {
     let icon_resource_path =
-        std::env::current_exe().unwrap_or_else(|_| PathBuf::from("codex-plus-plus.exe"));
+        std::env::current_exe().unwrap_or_else(|_| PathBuf::from("jancode.exe"));
     tokio::spawn(async move {
         for attempt in 1..=30 {
             if crate::windows_apply_codexplusplus_icon_to_process_window(

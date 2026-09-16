@@ -325,7 +325,7 @@ pub fn resolve_codex_app_dir_with_saved(
         .map(str::trim)
         .filter(|saved| !saved.is_empty())
     {
-        // 已保存路径无效（例如误选 Codex++）时回退自动探测
+        // 已保存路径无效（例如误选 JanCode / Codex++）时回退自动探测
         if let Some(path) = normalize_codex_app_path(Path::new(saved)) {
             #[cfg(windows)]
             if is_codex_store_package_dir(&path) {
@@ -358,7 +358,7 @@ pub fn normalize_codex_app_path(path: &Path) -> Option<PathBuf> {
         return None;
     }
 
-    // 拒绝把 Codex++ 管理工具安装目录误当成 Codex 桌面应用
+    // 拒绝把 JanCode 管理工具安装目录误当成 Codex 桌面应用
     if is_codex_plus_plus_path(path) {
         return None;
     }
@@ -401,7 +401,7 @@ pub fn normalize_codex_app_path(path: &Path) -> Option<PathBuf> {
     None
 }
 
-/// Codex++ 管理控制台/安装根，绝不能当作 OpenAI Codex 桌面应用。
+/// JanCode 管理控制台/安装根，绝不能当作 OpenAI Codex 桌面应用。
 fn is_codex_plus_plus_path(path: &Path) -> bool {
     for component in path.components() {
         let std::path::Component::Normal(name) = component else {
@@ -411,7 +411,11 @@ fn is_codex_plus_plus_path(path: &Path) -> bool {
             continue;
         };
         let lower = name.to_ascii_lowercase();
-        if lower == "codex++"
+        if lower == "jancode"
+            || lower == "jancode 管理工具"
+            || lower.contains("jancode-manager")
+            // 上游 Codex++ 的目录同样不是 Codex 桌面应用，一并拒绝
+            || lower == "codex++"
             || lower == "codexplusplus"
             || lower == "codex-plus-plus"
             || lower.contains("codex-plus-manager")

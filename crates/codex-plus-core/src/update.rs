@@ -4,9 +4,14 @@ use std::time::Duration;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
-pub const DEFAULT_REPOSITORY: &str = "BigPizzaV3/CodexPlusPlus";
+// ★ JanCode 定制：更新源必须指向 JanCode 自己的发布仓库。
+//   保持指向上游 BigPizzaV3/CodexPlusPlus 会导致 JanCode 把 Codex++ 的安装包
+//   当成"新版本"下载并覆盖自己，品牌与定制改动会被抹掉。
+//   在 JanCode 自己的仓库发布 release（含 latest.json）后，把下面两行改成对应地址即可；
+//   也可以在不改代码的情况下设置环境变量 JANCODE_UPDATE_REPOSITORY / JANCODE_LATEST_JSON_URL 覆盖。
+pub const DEFAULT_REPOSITORY: &str = "janzhao/jancode";
 pub const DEFAULT_LATEST_JSON_URL: &str =
-    "https://github.com/BigPizzaV3/CodexPlusPlus/releases/latest/download/latest.json";
+    "https://github.com/janzhao/jancode/releases/latest/download/latest.json";
 const UPDATE_CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
 const UPDATE_DOWNLOAD_TIMEOUT: Duration = Duration::from_secs(600);
 
@@ -391,9 +396,19 @@ fn is_macos_native_arch_asset(name: &str) -> bool {
     true
 }
 
+/// 资产名是否属于本项目的安装包。
+///
+/// ★ JanCode 定制：上游用「同时含 codex 与 plus」判定资产名，因为上游产物叫
+///   `CodexPlusPlus-<版本>-...`。JanCode 的产物叫 `JanCode-<版本>-macos-<arch>.dmg`
+///   与 `JanCode-<版本>-windows-x64-setup.exe`，两个词都不含——若不同时接受
+///   JanCode 命名，更新器会永远选不到安装包（静默失效，不报错）。
+///   两种命名都接受，以便兼容历史上游产物。
+fn is_own_installer_name(name: &str) -> bool {
+    name.contains("jancode") || (name.contains("codex") && name.contains("plus"))
+}
+
 fn is_windows_installer_asset(name: &str) -> bool {
-    name.contains("codex")
-        && name.contains("plus")
+    is_own_installer_name(name)
         && (name.ends_with(".msi")
             || name.ends_with("-setup.exe")
             || name.ends_with("_setup.exe")
@@ -404,7 +419,7 @@ fn is_windows_installer_asset(name: &str) -> bool {
 fn is_macos_installer_asset(name: &str) -> bool {
     // Loose shape check; arch preference is handled by platform_asset_rank
     // via is_macos_native_arch_asset.
-    name.contains("codex") && name.contains("plus") && name.ends_with(".dmg")
+    is_own_installer_name(name) && name.ends_with(".dmg")
 }
 
 pub fn launch_installer(path: &Path) -> anyhow::Result<()> {

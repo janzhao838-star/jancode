@@ -1,5 +1,5 @@
 /**
- * Codex++ 供应商预设
+ * JanCode 供应商预设
  * 基于 cc-switch (MIT) 的 codexProviderPresets.ts，作者 Jason Young
  * https://github.com/farion1231/cc-switch
  *
@@ -32,6 +32,56 @@ export interface ProviderPreset {
  * - modelList → 可选模型清单（换行分隔）
  */
 export const PRESETS: ProviderPreset[] = [
+  // ── 自建中转站（janzhao 自有，排在最前方便一键选用）──
+  {
+    id: "aionclaw",
+    name: "AionClaw 中转站",
+    websiteUrl: "https://www.aionclaw.cn",
+    apiKeyUrl: "https://router.aionclaw.com/console/token",
+    category: "aggregator",
+    baseUrl: "https://router.aionclaw.com/v1",
+    protocol: "chatCompletions",
+    model: "deepseek-v4-pro",
+    modelList: [
+      "deepseek-v4-pro",
+      "deepseek-v4-flash",
+      "deepseek-v4-flash-0731",
+      "deepseek-v4-pro-0813",
+      "glm-5.3",
+      "glm-5.3-flash",
+      "glm-5.2",
+      "kimi-k3",
+      "kimi-k2.7-code",
+      "kimi-k2.6",
+      "qwen3.8-max",
+      "qwen3.7-max",
+      "qwen3.7-plus",
+      "MiniMax-M3",
+      "MiniMax-M2.7",
+      "doubao-seed-2-1-turbo-260628",
+      "mimo-v2.5-pro",
+    ],
+  },
+  {
+    id: "junzi-ai",
+    name: "钧子AI（自建站点）",
+    websiteUrl: "https://charlene.cat:9090/",
+    apiKeyUrl: "https://charlene.cat:9090/console",
+    category: "aggregator",
+    baseUrl: "https://charlene.cat:9090/v1",
+    protocol: "chatCompletions",
+    model: "deepseek-v4-pro",
+  },
+  {
+    id: "janzhao-dgx-gateway",
+    name: "自建 DGX 网关",
+    websiteUrl: "https://ai.janzhao.cn:9090/",
+    category: "aggregator",
+    baseUrl: "https://ai.janzhao.cn:9090/v1",
+    protocol: "chatCompletions",
+    model: "qwen3.8-27b-sglang",
+  },
+
   // ── 官方 ──
   {
     id: "openai",

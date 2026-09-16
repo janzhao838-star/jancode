@@ -588,7 +588,7 @@ pub struct BackendSettings {
 
 impl Default for BackendSettings {
     fn default() -> Self {
-        Self {
+        let mut settings = Self {
             codex_app_path: String::new(),
             codex_extra_args: Vec::new(),
             provider_sync_enabled: false,
@@ -662,7 +662,14 @@ impl Default for BackendSettings {
             relay_test_model: default_relay_test_model(),
             tools: BTreeMap::new(),
             active_tool: ToolId::Codex,
-        }
+        };
+        // ★ 上游缺陷修复：load / save / normalize 三处都会调用 sync_tool_shards()
+        //   维持「扁平字段 ↔ tools.codex 分片」不漂移，唯独 Default 漏了。
+        //   结果是 BackendSettings::default() 的 tools 为空，而 load() 返回的
+        //   tools 含 Codex 分片，两者不相等（settings 的三个测试因此长期失败）。
+        //   这里补上同一步镜像，使默认值与加载结果严格一致。
+        settings.sync_tool_shards();
+        settings
     }
 }
 

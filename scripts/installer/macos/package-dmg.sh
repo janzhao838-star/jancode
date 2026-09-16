@@ -7,9 +7,9 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 DIST="$ROOT/dist/macos"
 STAGE="$DIST/stage"
 BINARY_DIR="${BINARY_DIR:-$ROOT/target/release}"
-DMG="$DIST/CodexPlusPlus-${VERSION}-macos-${ARCH}.dmg"
+DMG="$DIST/JanCode-${VERSION}-macos-${ARCH}.dmg"
 ICON_SOURCE="$ROOT/apps/codex-plus-manager/src-tauri/icons/icon.png"
-ICON_NAME="codex-plus-plus.icns"
+ICON_NAME="jancode.icns"
 ICON_ICNS="$DIST/$ICON_NAME"
 BACKGROUND_SOURCE="$ROOT/assets/installer/macos/dmg-background.svg"
 BACKGROUND_PATH="$STAGE/.background/background.png"
@@ -37,7 +37,7 @@ prepare_background() {
 }
 
 prepare_icon() {
-  local iconset="$DIST/codex-plus-plus.iconset"
+  local iconset="$DIST/jancode.iconset"
   rm -rf "$iconset"
   mkdir -p "$iconset"
 
@@ -75,12 +75,12 @@ create_app() {
   cp "$ICON_ICNS" "$app_dir/Contents/Resources/$ICON_NAME"
   chmod +x "$app_dir/Contents/MacOS/$executable_name"
   printf 'APPL????' > "$app_dir/Contents/PkgInfo"
-  if [ "$executable_name" = "CodexPlusPlusManager" ]; then
+  if [ "$executable_name" = "JanCodeManager" ]; then
     url_types='  <key>CFBundleURLTypes</key>
   <array>
     <dict>
       <key>CFBundleURLName</key>
-      <string>Codex++ Links</string>
+      <string>JanCode Links</string>
       <key>CFBundleURLSchemes</key>
       <array>
         <string>codexplusplus</string>
@@ -130,7 +130,15 @@ sign_app() {
   local app_dir="$1"
   local executable
   executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_dir/Contents/Info.plist")"
+  # ★ 本地构建修复：从 target/release 拷进来的二进制常带 Finder/来源扩展属性
+  #   （resource fork / com.apple.provenance 等），codesign 会直接报
+  #   "resource fork, Finder information, or similar detritus not allowed" 并失败。
+  #   签名前清掉整包的扩展属性即可复现上游 CI 的干净环境。
+  xattr -cr "$app_dir" 2>/dev/null || true
   codesign --force --sign - "$app_dir/Contents/MacOS/$executable"
+  # 给内层可执行文件签名后，系统可能又给 app 目录本身补上 com.apple.provenance，
+  # 导致紧接着的整包签名仍报同样的错；这里再清一次。
+  xattr -cr "$app_dir" 2>/dev/null || true
   codesign --force --sign - "$app_dir"
 }
 
@@ -156,18 +164,18 @@ verify_app() {
 
 prepare_icon
 prepare_background
-create_app "Codex++" "CodexPlusPlus" "$BINARY_DIR/codex-plus-plus" "com.bigpizzav3.codexplusplus" "true"
-create_app "Codex++ 管理工具" "CodexPlusPlusManager" "$BINARY_DIR/codex-plus-plus-manager" "com.bigpizzav3.codexplusplus.manager" "false"
+create_app "JanCode" "JanCode" "$BINARY_DIR/jancode" "com.janzhao.jancode" "true"
+create_app "JanCode 管理工具" "JanCodeManager" "$BINARY_DIR/jancode-manager" "com.janzhao.jancode.manager" "false"
 
-sign_app "$STAGE/Codex++.app"
-sign_app "$STAGE/Codex++ 管理工具.app"
+sign_app "$STAGE/JanCode.app"
+sign_app "$STAGE/JanCode 管理工具.app"
 
-verify_app "$STAGE/Codex++.app"
-verify_app "$STAGE/Codex++ 管理工具.app"
+verify_app "$STAGE/JanCode.app"
+verify_app "$STAGE/JanCode 管理工具.app"
 
 ln -s /Applications "$STAGE/Applications"
 
-DMG_WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/codex-plus-plus-dmg.XXXXXX")"
+DMG_WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/jancode-dmg.XXXXXX")"
 DMG_WORK_PATH="$DMG_WORK_DIR/$(basename "$DMG")"
 DMG_CREATED=false
 MOUNT_POINT=""
@@ -214,7 +222,7 @@ trap cleanup_dmg_work_dir EXIT
 
 DMG_CREATED=false
 for attempt in 1 2 3 4 5; do
-  if hdiutil create -volname "Codex++" -srcfolder "$STAGE" -ov -format UDRW "$DMG_WORK_PATH"; then
+  if hdiutil create -volname "JanCode" -srcfolder "$STAGE" -ov -format UDRW "$DMG_WORK_PATH"; then
     DMG_CREATED=true
     break
   fi
@@ -261,8 +269,8 @@ with timeout of 30 seconds
 
     tell dmgDisk
       set position of item "Applications" to {1000, 390}
-      set position of item "Codex++.app" to {220, 390}
-      set position of item "Codex++ 管理工具.app" to {460, 390}
+      set position of item "JanCode.app" to {220, 390}
+      set position of item "JanCode 管理工具.app" to {460, 390}
     end tell
 
     close dmgWindow
