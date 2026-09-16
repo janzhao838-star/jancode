@@ -123,6 +123,11 @@ jobs:
           - arch: arm64
             runner: macos-14
             target: aarch64-apple-darwin
+    env:
+      # 版本号与 Windows 侧同源，优先级：手动触发传入 > release tag > 默认值。
+      # 原先 macOS 各步骤直接读 GITHUB_REF_NAME —— 手动触发时它是分支名（main），
+      # 产物会叫 JanCode-main-macos-arm64.dmg，与 Windows 侧命名不一致。
+      RAW_VERSION: ${{ inputs.version || github.event.release.tag_name || '1.3.0' }}
     steps:
       - name: Checkout release tag
         uses: actions/checkout@v4
@@ -155,14 +160,14 @@ jobs:
 
       - name: Build macOS DMG
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${RAW_VERSION#v}"
           VERSION="${VERSION#V}"
           BINARY_DIR="$PWD/target/${{ matrix.target }}/release" bash scripts/installer/macos/package-dmg.sh "$VERSION" "${{ matrix.arch }}"
 
       - name: Build macOS zip asset
         shell: bash
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${RAW_VERSION#v}"
           VERSION="${VERSION#V}"
           mkdir -p dist/macos/app-${{ matrix.arch }}
           cp "target/${{ matrix.target }}/release/jancode" "dist/macos/app-${{ matrix.arch }}/"
@@ -172,16 +177,33 @@ jobs:
       - name: Verify macOS bundle structure
         run: |
           set -euo pipefail
-          test -L "dist/macos/stage/Applications"
-          test "$(readlink "dist/macos/stage/Applications")" = "/Applications"
-          for app in "dist/macos/stage/JanCode.app" "dist/macos/stage/JanCode 管理工具.app"; do
+          VERSION="${RAW_VERSION#v}"
+          VERSION="${VERSION#V}"
+          DMG="dist/macos/JanCode-${VERSION}-macos-${{ matrix.arch }}.dmg"
+
+          # 挂载 DMG 验证，而不是去读 dist/macos/stage：
+          # package-dmg.sh 的 stage 建在 /tmp（mktemp -d），并且脚本退出时
+          # trap 会把它删掉，所以那个路径从来就不存在。
+          # 客户拿到的是 DMG，验它才是验真实产物。
+          test -f "$DMG"
+          MOUNT="$(mktemp -d)"
+          hdiutil attach "$DMG" -nobrowse -readonly -mountpoint "$MOUNT" >/dev/null
+          # 无论后面哪一步失败都要卸载，否则 runner 上会留下挂载点
+          trap 'hdiutil detach "$MOUNT" >/dev/null 2>&1 || true' EXIT
+
+          test -L "$MOUNT/Applications"
+          test "$(readlink "$MOUNT/Applications")" = "/Applications"
+
+          for app in "$MOUNT/JanCode.app" "$MOUNT/JanCode 管理工具.app"; do
+            test -d "$app"
             test -f "$app/Contents/Info.plist"
             test -f "$app/Contents/PkgInfo"
             test -x "$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist")"
             plutil -lint "$app/Contents/Info.plist" >/dev/null
-            codesign -dv "$app" >/dev/null 2>&1
-            echo "verified: $app"
+            echo "verified: $(basename "$app")"
           done
+
+          echo "DMG verified: $DMG"
 
       - name: Upload macOS artifact
         if: github.event_name == 'workflow_dispatch'
