@@ -76,9 +76,9 @@ export const PRESETS: ProviderPreset[] = [
   {
     id: "janzhao-dgx-gateway",
     name: "自建 DGX 网关",
-    websiteUrl: "https://ai.janzhao.cn:9090/",
+    websiteUrl: "https://janzhao.cn:9090/",
     category: "aggregator",
-    baseUrl: "https://ai.janzhao.cn:9090/v1",
+    baseUrl: "https://janzhao.cn:9090/v1",
     protocol: "chatCompletions",
     model: "qwen3.8-27b-sglang",
   },
