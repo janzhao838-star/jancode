@@ -437,9 +437,9 @@ fn show_main_window<R: tauri::Runtime>(app_handle: &tauri::AppHandle<R>) {
     }
 }
 
-/// Restores and focuses an existing manager window on Windows.
+/// 激活已存在的 manager 窗口（Windows）。
 ///
-/// This is a no-op on other platforms.
+/// 其它平台上是空操作。
 pub fn focus_existing_manager_window() {
     #[cfg(windows)]
     {
@@ -448,10 +448,22 @@ pub fn focus_existing_manager_window() {
             if process.process_id == current_process_id {
                 continue;
             }
+            // 只按 exe_file 判断。
+            //
+            // 这里原先是两个条件：exe_file 等于 "jancode-manager.exe"，
+            // 或者 name 等于 "codex-plus-plus-manager.exe"。
+            // 两处都是坏的：
+            //   1. WindowsProcessInfo 没有 name 字段，这段在 Windows 上根本编译不过
+            //      （error[E0425]: cannot find value `name` in this scope）
+            //   2. "codex-plus-plus-manager.exe" 是上游的旧名字，改名时漏掉了
+            //
+            // 之所以长期没人发现：这段是 #[cfg(windows)]，在 macOS 上不参与编译，
+            // 而发布工作流此前只在 release 时触发、从未跑过——
+            // 于是「Windows 端编译不过」这件事一直藏着。
+            // 第一次真实 Windows 构建就把它暴露了出来。
             if process
                 .exe_file
                 .eq_ignore_ascii_case("jancode-manager.exe")
-                || name.eq_ignore_ascii_case("codex-plus-plus-manager.exe")
             {
                 let _ = codex_plus_core::windows_activate_process_window(process.process_id);
                 break;
