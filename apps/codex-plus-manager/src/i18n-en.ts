@@ -1188,6 +1188,34 @@ export const EN_PLAIN: Record<string, string> = {
   "JanCode 基于开源项目 CodexPlusPlus 定制重命名，遵循 GNU AGPL-3.0 许可。上游版权归其作者所有；本定制版的应用名称、图标、界面文案与数据目录为 JanCode 自有。AGPL-3.0 要求：分发本软件或通过网络提供其服务时，必须同时向使用者提供本修改版的完整对应源码，并保留上游署名。下方「本版源码」即为该源码的获取地址。": "JanCode is a rebranded build of the open-source CodexPlusPlus, licensed under GNU AGPL-3.0. Upstream copyright stays with its authors; the JanCode name, icon, UI copy and data directory belong to this build. AGPL-3.0 requires that distributing this software, or offering it over a network, comes with the complete corresponding source of this modified version and with upstream attribution preserved. The \"This build's source\" link below points at that source.",
   "本版源码": "This build's source",
 
+  // ── 模型广场（src/components/ModelMarketplacePanel.tsx）──
+  "模型广场": "Model marketplace",
+  "浏览各供应商提供的模型，按厂商、标签和关键词筛选":
+    "Browse the models each provider offers; filter by vendor, tag and keyword",
+  "还没有配置供应商": "No providers configured yet",
+  "模型广场从中转站读取可用模型，所以先要有至少一个供应商。":
+    "The marketplace reads the available models from your relay, so it needs at least one provider first.",
+  "去配置供应商": "Configure providers",
+  "数据来源": "Data sources",
+  "获取模型列表": "Fetch model list",
+  "重新获取": "Refresh",
+  "从每个供应商的 /v1/models 读取。不会自动请求——中转站可能很慢或不可达。":
+    "Reads /v1/models from every provider. Nothing is requested automatically — a relay may be slow or unreachable.",
+  "按标签筛选": "Filter by tag",
+  "清空": "Clear",
+  "标签由模型 id 推导，不是上游声明的参数。":
+    "Tags are inferred from the model id; the upstream does not declare them.",
+  "搜索模型、厂商或标签…": "Search models, vendors or tags…",
+  "按厂商": "By vendor",
+  "按供应商": "By provider",
+  "还没有获取模型列表。点左侧「获取模型列表」从中转站读取当前可用模型。":
+    "No model list fetched yet. Use “Fetch model list” on the left to read the models your relay currently offers.",
+  "没有匹配的模型。换个关键词，或清空标签筛选。":
+    "No matching models. Try another keyword, or clear the tag filters.",
+  "已配置": "Configured",
+  "说明：本页只展示上游真实提供的信息（模型 id 与来源）。单价、延迟、吞吐这些中转站的 /v1/models 并不返回，因此这里不显示，也不做估算。":
+    "Note: this page shows only what the upstream actually returns (model id and source). Unit prices, latency and throughput are not returned by /v1/models, so they are neither displayed nor estimated.",
+
 };
 
 // Interpolated strings: tf("前缀 {0}", [x]) -> EN_TEMPLATE["前缀 {0}"] with {0} filled.
@@ -1303,6 +1331,11 @@ export const EN_TEMPLATE: Record<string, string> = {
   "✅ 识别成功（耗时 {0}s）": "✅ Recognition succeeded ({0}s)",
   "❌ 服务返回错误（HTTP {0}）": "❌ Server returned an error (HTTP {0})",
   "❌ 认证失败（HTTP {0}）：API Key 或模型名可能不正确": "❌ Auth failed (HTTP {0}): the API key or model name may be incorrect",
+  "{0}x": "{0}x",
+  "共 {0} 个模型条目 · {1} 个厂商 · {2} 个供应商":
+    "{0} model entries · {1} vendors · {2} providers",
+  "（其中 {0} 个 id 被多个供应商同时提供）":
+    " ({0} of these ids are offered by more than one provider)",
 };
 
 // Backend (Rust) messages returned via result.message. These are translated

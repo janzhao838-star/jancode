@@ -72,6 +72,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { SkillsCenterPanel } from "@/components/SkillsCenterPanel";
+import { ModelMarketplacePanel } from "@/components/ModelMarketplacePanel";
 import { ProviderPresetSelector } from "@/components/ProviderPresetSelector";
 import type { PresetPatch } from "@/components/ProviderPresetSelector";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -935,7 +936,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   grok: Blocks,
 };
 
-type Route = "overview" | "relay" | "grok" | "relayEnvironment" | "sessions" | "context" | "skills" | "weixin" | "enhance" | "dreamSkin" | "zedRemote" | "userScripts" | "recommendations" | "maintenance" | "about" | "settings";
+type Route = "overview" | "relay" | "modelMarket" | "grok" | "relayEnvironment" | "sessions" | "context" | "skills" | "weixin" | "enhance" | "dreamSkin" | "zedRemote" | "userScripts" | "recommendations" | "maintenance" | "about" | "settings";
 type Theme = "dark" | "light";
 
 const MANAGER_NAVIGATION_EVENT = "manager-navigation-requested";
@@ -954,6 +955,8 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string
   // 概览在两个工具下都可见：它承载共用的置顶推荐位，以及各自的状态。
   { id: "overview", label: t("概览"), icon: LayoutDashboard },
   { id: "relay", label: t("供应商配置"), icon: KeyRound, tool: "codex" },
+  // 模型广场依赖供应商配置，所以和供应商配置一样属于 codex 工具下
+  { id: "modelMarket", label: t("模型广场"), icon: Store, tool: "codex" },
   { id: "grok", label: t("Grok 配置"), icon: Blocks, tool: "grok" },
   { id: "sessions", label: t("会话管理"), icon: MessageCircle, tool: "codex" },
   { id: "context", label: t("MCP&插件"), icon: Network, tool: "codex" },
@@ -973,7 +976,7 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string
 const navigationSections: Array<{ label: string; routes: Route[]; placement?: "bottom" }> = [
   {
     label: t("工作区"),
-    routes: ["overview", "relay", "grok", "sessions", "context"],
+    routes: ["overview", "relay", "modelMarket", "grok", "sessions", "context"],
   },
   {
     label: t("扩展"),
@@ -3581,6 +3584,14 @@ export function App() {
                 setSettingsForm(updated);
                 void actions.saveSettingsValue(updated, true);
               }}
+            />
+          ) : null}
+          {route === "modelMarket" ? (
+            <ModelMarketplacePanel
+              profiles={settingsForm.relayProfiles}
+              loadModels={fetchRelayProfileModels}
+              loadBilling={fetchSub2ApiBilling}
+              onOpenProviders={() => navigate("relay")}
             />
           ) : null}
           {route === "recommendations" ? <RecommendationsScreen ads={ads} actions={actions} /> : null}
@@ -10238,6 +10249,7 @@ function routeSubtitle(route: Route) {
   const subtitles: Record<Route, string> = {
     overview: t("检查问题、启动与快速修复"),
     relay: t("管理 API 供应商、协议、Key 与配置文件"),
+    modelMarket: t("浏览各供应商提供的模型，按厂商、标签和关键词筛选"),
     grok: t("管理 Grok CLI 的模型与 API 端点"),
     relayEnvironment: t("排查可能干扰中转站配置的本机环境"),
     sessions: t("查看、删除和修复 Codex 本地会话"),
