@@ -130,8 +130,23 @@
   12 个面向中文开发场景的技能，每个含名称、说明、触发词、中文提示词正文；区分常用与进阶。
   匹配规则：中英文触发词、大小写不敏感、中英文标点插入不影响命中、命中强度按触发词数量与
   具体程度累加、同分按 id 升序保证稳定、无命中返回空数组。
-- `components/SkillsCenterPanel.tsx`：两个标签页——「技能库」（浏览/搜索/启用，专家模式切换）
-  与「触发测试」（输入任务描述，实时显示命中技能与强度）。设计参考 ZeroCode 的技能系统。
+- `roles-library.ts`：内置角色库（8 个中文人设）。角色与技能的区别是：技能按任务触发、可同时
+  命中多个；角色决定回答的立场与口吻，**单选**。`activeRole` 在 id 不存在时返回 `undefined`
+  而不是退回默认角色——否则用户会以为生效的是自己选的那个。
+- `capability-toggles.ts`：能力开关清单。`field` 必须与 `crates/codex-plus-core/src/settings.rs`
+  的 `BackendSettings` 字段逐字对应（TS 用 camelCase、Rust 用 snake_case + `#[serde(rename)]`）。
+- `components/SkillsCenterPanel.tsx`：四个标签页
+  - 技能库：浏览/搜索/启用，专家模式切换
+  - 触发测试：输入任务描述，实时显示命中技能与强度
+  - 角色库：单选角色，可取消
+  - 能力开关：直接读写设置的增强开关，总开关关闭时其余项标注为不生效
+  设计参考 ZeroCode 的技能系统。开关数据放在独立 `.ts` 模块而非组件文件，既是数据与展示分离，
+  也因为 Node 测试运行器无法加载 `.tsx`，放在组件里这份数据就无法被测试覆盖。
+- `roles-library.test.ts`：除数据完整性外，有一条关键断言——**每个开关 field 都必须真实存在于
+  Rust 的 `BackendSettings`**。写错字段名时 serde 会静默忽略：界面上开关能点、看起来也开了，
+  实际配置里什么都没变。该断言在实现时当场查出 `codexAppForcePluginInstall` 并不存在
+  （它只出现在 `settings.rs` 的一段历史迁移测试夹具里，既非真实字段、前端也没有），已换为
+  `codexAppAnswerOutlineEnabled` 与 `codexAppStepwiseEnabled`。
 - `App.tsx`：`skills` 路由此前已在 `Route` 类型中声明，但从未出现在任何导航组与渲染分支中，
   属上游未接线的空壳；本次补齐导航项、分组、渲染分支与副标题。
 - 技能启用状态存于 webview `localStorage`（键前缀 `jancode.skills.`）。未写入 `BackendSettings`，
