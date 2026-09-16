@@ -23,6 +23,7 @@ const SRC_FILES = [
   "src/App.tsx",
   "src/components/ProviderPresetSelector.tsx",
   "src/components/ModelMarketplacePanel.tsx",
+  "src/components/AgentCenterPanel.tsx",
   "src/vlm-test-translation.ts",
 ];
 

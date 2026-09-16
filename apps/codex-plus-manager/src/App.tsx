@@ -73,6 +73,7 @@ import {
 } from "lucide-react";
 import { SkillsCenterPanel } from "@/components/SkillsCenterPanel";
 import { ModelMarketplacePanel } from "@/components/ModelMarketplacePanel";
+import { AgentCenterPanel } from "@/components/AgentCenterPanel";
 import { ProviderPresetSelector } from "@/components/ProviderPresetSelector";
 import type { PresetPatch } from "@/components/ProviderPresetSelector";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -936,7 +937,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   grok: Blocks,
 };
 
-type Route = "overview" | "relay" | "modelMarket" | "grok" | "relayEnvironment" | "sessions" | "context" | "skills" | "weixin" | "enhance" | "dreamSkin" | "zedRemote" | "userScripts" | "recommendations" | "maintenance" | "about" | "settings";
+type Route = "overview" | "relay" | "modelMarket" | "grok" | "relayEnvironment" | "sessions" | "context" | "skills" | "agents" | "weixin" | "enhance" | "dreamSkin" | "zedRemote" | "userScripts" | "recommendations" | "maintenance" | "about" | "settings";
 type Theme = "dark" | "light";
 
 const MANAGER_NAVIGATION_EVENT = "manager-navigation-requested";
@@ -966,6 +967,9 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string
   { id: "zedRemote", label: t("Zed 远程项目"), icon: ExternalLink, tool: "codex" },
   { id: "userScripts", label: t("脚本市场"), icon: FileCode2, tool: "codex" },
   { id: "skills", label: t("技能中心"), icon: Star, tool: "codex" },
+  // 技能与智能体是配套的：技能是「按任务触发的能力包」（多选），
+  // 智能体是「回答的立场与口吻」（单选），所以放在一起
+  { id: "agents", label: t("智能体"), icon: Bot, tool: "codex" },
   { id: "recommendations", label: t("推荐内容"), icon: ExternalLink },
   { id: "maintenance", label: t("安装维护"), icon: Wrench, tool: "codex" },
   { id: "about", label: t("关于"), icon: Info },
@@ -980,7 +984,7 @@ const navigationSections: Array<{ label: string; routes: Route[]; placement?: "b
   },
   {
     label: t("扩展"),
-    routes: ["weixin", "enhance", "dreamSkin", "zedRemote", "userScripts", "skills"],
+    routes: ["weixin", "enhance", "dreamSkin", "zedRemote", "userScripts", "skills", "agents"],
   },
   {
     label: t("系统"),
@@ -3594,6 +3598,7 @@ export function App() {
               onOpenProviders={() => navigate("relay")}
             />
           ) : null}
+          {route === "agents" ? <AgentCenterPanel /> : null}
           {route === "recommendations" ? <RecommendationsScreen ads={ads} actions={actions} /> : null}
           {route === "maintenance" ? (
             <MaintenanceScreen
@@ -10255,6 +10260,7 @@ function routeSubtitle(route: Route) {
     sessions: t("查看、删除和修复 Codex 本地会话"),
     context: t("独立管理 MCP 服务器与插件"),
     skills: t("内置技能库与触发词匹配，按任务自动启用技能"),
+    agents: t("选择回答的立场与口吻，可新建自己的智能体"),
     weixin: t("通过个人微信连接本机 Codex 会话"),
     enhance: t("会话删除、导出和脚本能力"),
     dreamSkin: t("Codex-Dream-Skin 风格主题和换图"),

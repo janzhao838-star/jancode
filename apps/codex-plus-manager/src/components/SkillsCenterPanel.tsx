@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Power, PowerOff, Search, Star } from "lucide-react";
 import { t } from "@/i18n";
 import { BUILTIN_ROLES, activeRole, type Role } from "../roles-library";
+import { CUSTOM_ROLES_STORAGE_KEY, mergeRoles, parseCustomRoles } from "../roles-store";
 import { CAPABILITY_TOGGLES } from "../capability-toggles";
 import {
   BUILTIN_SKILLS,
@@ -399,13 +400,20 @@ function TriggerTester({
 
 function RoleGallery() {
   const [selected, setSelected] = useState("");
-  const [roles] = useState<Role[]>(BUILTIN_ROLES);
+  const [roles, setRoles] = useState<Role[]>(BUILTIN_ROLES);
 
   useEffect(() => {
     try {
       setSelected(window.localStorage.getItem(ROLE_STORAGE_KEY) ?? "");
     } catch {
       setSelected("");
+    }
+    // 自定义角色在「智能体」页里维护。这里一并读出来——否则在那边选中的自定义角色
+    // 到这边会因为查不到而显示成「未选择」，看起来像选择丢了。
+    try {
+      setRoles(mergeRoles(parseCustomRoles(window.localStorage.getItem(CUSTOM_ROLES_STORAGE_KEY))));
+    } catch {
+      setRoles(BUILTIN_ROLES);
     }
   }, []);
 
