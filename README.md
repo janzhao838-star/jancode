@@ -1,7 +1,7 @@
-# Codex++
+# JanCode
 
 <p align="center">
-  <img src="docs/images/codex-plus-plus.png" alt="Codex++ 图标" width="160">
+  <img src="apps/codex-plus-manager/src-tauri/icons/icon.png" alt="JanCode 图标" width="160">
 </p>
 
 <p align="center">
@@ -9,29 +9,37 @@
 </p>
 
 <p align="center">
-  <img alt="Release" src="https://img.shields.io/github/v/release/BigPizzaV3/CodexPlusPlus">
-  <img alt="Stars" src="https://img.shields.io/github/stars/BigPizzaV3/CodexPlusPlus">
-  <img alt="License" src="https://img.shields.io/github/license/BigPizzaV3/CodexPlusPlus">
+  <img alt="Release" src="https://img.shields.io/github/v/release/janzhao838-star/jancode">
+  <img alt="Stars" src="https://img.shields.io/github/stars/janzhao838-star/jancode">
+  <img alt="License" src="https://img.shields.io/github/license/janzhao838-star/jancode">
   <img alt="Rust" src="https://img.shields.io/badge/rust-1.85%2B-orange">
   <img alt="Tauri" src="https://img.shields.io/badge/tauri-2.x-24C8DB">
 </p>
 
-Codex++ 是面向 OpenAI Codex / ChatGPT 桌面应用的外部启动器与管理工具。它通过 Chromium DevTools Protocol 和本地辅助服务提供供应商切换、协议转换、会话管理与界面增强，不修改官方应用的 `app.asar`，也不向安装目录写入补丁文件。
+JanCode 是面向 OpenAI Codex / ChatGPT 桌面应用的外部启动器与管理工具。它通过 Chromium DevTools Protocol 和本地辅助服务提供供应商切换、协议转换、会话管理与界面增强，不修改官方应用的 `app.asar`，也不向安装目录写入补丁文件。
+
+本项目基于 [**Codex++**](https://github.com/BigPizzaV3/CodexPlusPlus)（AGPL-3.0）定制重命名而来，改动记录见 [JANCODE_BRANDING.md](JANCODE_BRANDING.md)。与原版的区别：
+
+- 使用自己的应用名、标识符（`com.janzhao.jancode` / `com.janzhao.jancode.manager`）与数据目录，**与已安装的 Codex++ 互不干扰**；
+- **更新源指向本仓库**（`releases/latest/download/latest.json`），不会把上游的 Codex++ 安装包覆盖上来；
+- 界面为 JanCode 自有品牌。
+
+上游项目的问题与功能建议请反馈给 [Codex++](https://github.com/BigPizzaV3/CodexPlusPlus)，JanCode 自身的问题请提到[本仓库 Issues](https://github.com/janzhao838-star/jancode/issues)。
 
 ## 快速使用
 
-从 [GitHub Releases](https://github.com/BigPizzaV3/CodexPlusPlus/releases) 下载最新版安装包：
+从 [GitHub Releases](https://github.com/janzhao838-star/jancode/releases) 下载最新版安装包：
 
-- Windows：`CodexPlusPlus-*-windows-x64-setup.exe`
-- macOS Intel：`CodexPlusPlus-*-macos-x64.dmg`
-- macOS Apple Silicon：`CodexPlusPlus-*-macos-arm64.dmg`
+- Windows：`JanCode-*-windows-x64-setup.exe`
+- macOS Intel：`JanCode-*-macos-x64.dmg`
+- macOS Apple Silicon：`JanCode-*-macos-arm64.dmg`
 
 安装后会有两个入口：
 
-- `Codex++`：静默启动官方桌面应用，并加载已保存的供应商配置与增强功能。
-- `Codex++ 管理工具`：管理供应商、模型、工具插件、会话、增强功能、脚本、更新和诊断。
+- `JanCode`：静默启动官方桌面应用，并加载已保存的供应商配置与增强功能。
+- `JanCode 管理工具`：管理供应商、模型、工具插件、会话、增强功能、脚本、更新和诊断。
 
-首次使用建议先打开管理工具，确认应用路径和运行状态，再配置供应商与增强功能，最后从 `Codex++` 入口启动。Windows 安装包会创建桌面和开始菜单快捷方式；macOS DMG 会安装 `/Applications/Codex++.app` 和 `/Applications/Codex++ 管理工具.app`。
+首次使用建议先打开管理工具，确认应用路径和运行状态，再配置供应商与增强功能，最后从 `JanCode` 入口启动。Windows 安装包会创建桌面和开始菜单快捷方式；macOS DMG 会安装 `/Applications/JanCode.app` 和 `/Applications/JanCode 管理工具.app`。
 
 ## 赞助商
 
@@ -169,7 +177,9 @@ Codex++ 是面向 OpenAI Codex / ChatGPT 桌面应用的外部启动器与管理
 
 ## 交流与支持
 
-欢迎加入 Codex++ 交流 3 群（QQ群：619480492），反馈问题、交流使用体验或提出新功能建议。<a href="https://qm.qq.com/q/Erf1F1zwqs">点击链接加入群聊</a>。
+> 下面这些社群**属于上游项目 Codex++**，不是 JanCode 的。JanCode 的问题请提到[本仓库 Issues](https://github.com/janzhao838-star/jancode/issues)。
+
+上游 Codex++ 交流 3 群（QQ群：619480492），反馈问题、交流使用体验或提出新功能建议。<a href="https://qm.qq.com/q/Erf1F1zwqs">点击链接加入群聊</a>。
 
 <img src="docs/images/discussion-group-qr.jpg" alt="Codex++ 微信群二维码" width="260">
 
@@ -188,11 +198,11 @@ Telegram 频道：<https://t.me/CodexPlusPlus>
 | 开发工作流 | 项目移动、Upstream worktree、线程 ID、Zed Remote 项目识别与打开 |
 | 脚本与维护 | 用户脚本安装与启停、应用检测、快捷方式、Watcher、环境冲突、日志诊断、健康检查和 Release 更新 |
 
-所有界面增强都可以单独关闭。关闭“Codex 增强”总开关后，Codex++ 仍可作为供应商和启动管理工具使用。
+所有界面增强都可以单独关闭。关闭“Codex 增强”总开关后，JanCode 仍可作为供应商和启动管理工具使用。
 
 ## 供应商模式
 
-Codex++ 将官方登录、混入 API 和纯 API 分开保存和切换：
+JanCode 将官方登录、混入 API 和纯 API 分开保存和切换：
 
 | 模式 | 用途 | 认证边界 |
 | --- | --- | --- |
@@ -203,7 +213,7 @@ Codex++ 将官方登录、混入 API 和纯 API 分开保存和切换：
 
 每个供应商可配置 Responses 或 Chat Completions 协议、模型列表、测试模型、User-Agent、上下文窗口、自动压缩阈值，以及该供应商启用的 MCP Server、Skill 和 Plugin。Chat Completions 可通过本地代理转换为 Codex 使用的 Responses 协议。
 
-每模型窗口支持 `1M`、`200K` 或纯数字。Codex++ 会生成独立 `model_catalog_json`，让 Codex 按当前模型使用对应窗口。
+每模型窗口支持 `1M`、`200K` 或纯数字。JanCode 会生成独立 `model_catalog_json`，让 Codex 按当前模型使用对应窗口。
 
 切换供应商时会先保存当前配置，再写入目标配置。真实 API Key 只保存在本机，请勿放入日志、截图或 issue。
 
@@ -216,11 +226,19 @@ Codex++ 将官方登录、混入 API 和纯 API 分开保存和切换：
 - Stepwise 下一步建议，可单独配置 API、模型、建议数量与超时。
 - Upstream worktree、Zed Remote、自定义图片覆盖层和用户脚本。
 
-依赖注入脚本的设置通常需要保存后重新启动 Codex++ 才会生效。
+依赖注入脚本的设置通常需要保存后重新启动 JanCode 才会生效。
 
 ## 自动更新与安装包
 
-Codex++ 通过 GitHub Release 发布安装包。Windows 会生成 NSIS 安装程序，macOS 会生成 Intel x64 和 Apple Silicon arm64 两个 DMG。
+JanCode 通过 GitHub Release 发布安装包。Windows 会生成 NSIS 安装程序，macOS 会生成 Intel x64 和 Apple Silicon arm64 两个 DMG。
+
+每次发版由发布流水线（`.github/workflows/release-assets.yml`）自动构建上述安装包并附到 Release 上。**更新源是本仓库的静态清单**：
+
+```
+https://github.com/janzhao838-star/jancode/releases/latest/download/latest.json
+```
+
+它明确指向本仓库，因此自动更新**不会**拉到上游 Codex++ 的安装包。
 
 管理工具的“关于”页可以检查并启动更新。静默启动器发现新版本时会拉起管理工具并进入更新提示。
 
@@ -229,14 +247,14 @@ Codex++ 通过 GitHub Release 发布安装包。Windows 会生成 NSIS 安装程
 - Codex 配置：`~/.codex/config.toml`
 - Codex 登录状态：`~/.codex/auth.json`
 - Codex 本地数据库：优先读取 `~/.codex/sqlite/*.db`，旧版回退到 `~/.codex/state_5.sqlite`
-- Codex++ 状态与日志：`~/.codex-session-delete/`
+- JanCode 状态与日志：`~/.codex-session-delete/`
 - Provider 同步备份：`~/.codex/backups_state/provider-sync`
 
 ## 常见问题
 
-### Codex++ 菜单没出现
+### JanCode 菜单没出现
 
-确认从 `Codex++` 入口启动，而不是直接打开官方应用。然后在管理工具的“安装维护”和“关于”页面检查应用路径、启动状态与诊断日志。
+确认从 `JanCode` 入口启动，而不是直接打开官方应用。然后在管理工具的“安装维护”和“关于”页面检查应用路径、启动状态与诊断日志。
 
 ### 切换供应商后请求失败
 
@@ -248,28 +266,28 @@ Codex++ 通过 GitHub Release 发布安装包。Windows 会生成 NSIS 安装程
 
 ### Upstream worktree 和 Codex 原生创建有什么区别
 
-Codex++ 的 Upstream worktree 功能等价于先更新远端分支，再执行：
+JanCode 的 Upstream worktree 功能等价于先更新远端分支，再执行：
 
 ```bash
 git worktree add -b <new-branch> <worktree-path> upstream/<base-branch>
 ```
 
-这样新 worktree 从最新的远端跟踪分支开始，而不是从当前会话所在的本地 HEAD 开始。如果 Codex++ 无法安全识别当前 Codex 版本的原生 worktree 创建表单，请从 Codex++ 菜单中手动填写仓库路径、分支名、worktree 路径、remote 和 base branch。
+这样新 worktree 从最新的远端跟踪分支开始，而不是从当前会话所在的本地 HEAD 开始。如果 JanCode 无法安全识别当前 Codex 版本的原生 worktree 创建表单，请从 JanCode 菜单中手动填写仓库路径、分支名、worktree 路径、remote 和 base branch。
 
 ### macOS 提示无法打开或已损坏
 
 当前安装包未签名/未公证时，macOS Gatekeeper 可能拦截，出现“已损坏，无法打开”的提示：
 
-![macOS 提示 Codex++ 管理工具已损坏](docs/images/macos-damaged-warning.png)
+![macOS 提示 JanCode 管理工具已损坏](docs/images/macos-damaged-warning.png)
 
 如果遇到该提示，可以在终端执行下面两条命令，解除苹果系统的安全隔离限制：
 
 ```bash
-sudo xattr -rd com.apple.quarantine /Applications/Codex++\ 管理工具.app
-sudo xattr -rd com.apple.quarantine /Applications/Codex++.app
+sudo xattr -rd com.apple.quarantine /Applications/JanCode\ 管理工具.app
+sudo xattr -rd com.apple.quarantine /Applications/JanCode.app
 ```
 
-执行后重新打开 `Codex++` 或 `Codex++ 管理工具` 即可。
+执行后重新打开 `JanCode` 或 `JanCode 管理工具` 即可。
 
 ### macOS Intel 能用吗
 
@@ -317,4 +335,4 @@ CodexPlusPlus 采用 [GNU Affero General Public License v3.0](LICENSE)，SPDX �
 
 ## 兼容性说明
 
-Codex++ 依赖官方桌面应用的页面结构、CDP 和本地数据格式。官方应用更新后，部分注入功能可能需要跟随适配；修改供应商配置或本地会话数据前应保留备份。
+JanCode 依赖官方桌面应用的页面结构、CDP 和本地数据格式。官方应用更新后，部分注入功能可能需要跟随适配；修改供应商配置或本地会话数据前应保留备份。
