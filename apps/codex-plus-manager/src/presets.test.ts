@@ -54,14 +54,27 @@ test("预设里不允许出现任何推广码", () => {
   }
 });
 
-test("不提供国外聚合站预设", () => {
-  // 需求是「只做国内模型」。GrooRoute 这类国外聚合站提供的是 GPT 系列，
-  // 与要求冲突，已整条移除；这条守住它不会被上游更新带回来。
-  for (const id of ["grooroute", "openai", "openrouter", "novita", "azure", "minimax-global"]) {
-    assert.equal(
-      PRESETS.find((preset) => preset.id === id),
-      undefined,
-      `${id} 是国外供应商，不应出现在预设里`,
+test("预设不得以国外模型作为默认模型", () => {
+  // 需求是「只做国内模型」。之前这条是按 id 枚举来判断的（只列了 openai、
+  // openrouter 等几个名字），结果漏掉了 9 个聚合站——它们不叫 openai，
+  // 但默认模型是 gpt-5.5。枚举法只能守住已经知道的，守不住同一类的新面孔，
+  // 所以这里改成按性质判断：默认模型本身不能是国外模型。
+  const FOREIGN_MODEL = /(^|\/)(gpt-|o1|o3|o4|claude|gemini|grok|mistral|llama)/i;
+
+  for (const preset of PRESETS) {
+    assert.ok(
+      !FOREIGN_MODEL.test(preset.model),
+      `${preset.id} 的默认模型是国外模型（${preset.model}），与「只做国内模型」冲突`,
     );
   }
+});
+
+test("预设仍以国内厂商与自建站为主", () => {
+  // 守住清过头：移除国外聚合站后，国内厂商与自建站必须还在。
+  const ids = new Set(PRESETS.map((preset) => preset.id));
+  for (const id of ["aionclaw", "junzi-ai", "janzhao-dgx-gateway", "deepseek", "zhipu-glm",
+                    "kimi", "bailian", "minimax", "volcano-ark", "siliconflow"]) {
+    assert.ok(ids.has(id), `国内预设 ${id} 不应被移除`);
+  }
+  assert.ok(PRESETS.length >= 12, `预设数量偏少（${PRESETS.length}），可能清过头了`);
 });
