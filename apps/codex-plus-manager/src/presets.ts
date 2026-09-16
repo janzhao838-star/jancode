@@ -7,7 +7,8 @@
  * 去掉了 cc-switch 原始的商业合作标记（isPartner、partnerPromotionKey）。
  */
 
-export type PresetCategory = "official" | "aggregator" | "third_party" | "cn_official";
+// 本定制版只内置国内模型渠道，故不再使用 official / third_party 两类。
+export type PresetCategory = "aggregator" | "cn_official";
 
 export type RelayProtocol = "responses" | "chatCompletions";
 
@@ -82,16 +83,7 @@ export const PRESETS: ProviderPreset[] = [
     model: "qwen3.8-27b-sglang",
   },
 
-  // ── 官方 ──
-  {
-    id: "openai",
-    name: "OpenAI Official",
-    category: "official",
-    baseUrl: "https://api.openai.com/v1",
-    protocol: "responses",
-    model: "gpt-5.5",
-    websiteUrl: "https://chatgpt.com/codex",
-  },
+  // ── 第三方聚合（已按需精简，仅保留国内可用渠道）──
 
   // ── 中国官方 ──
   {
@@ -156,17 +148,6 @@ export const PRESETS: ProviderPreset[] = [
     apiKeyUrl: "https://platform.minimaxi.com/subscribe/coding-plan",
     category: "cn_official",
     baseUrl: "https://api.minimaxi.com/v1",
-    protocol: "chatCompletions",
-    model: "MiniMax-M3",
-    modelList: ["MiniMax-M3", "MiniMax-M2.7"],
-  },
-  {
-    id: "minimax-global",
-    name: "MiniMax (Global)",
-    websiteUrl: "https://platform.minimax.io",
-    apiKeyUrl: "https://platform.minimax.io/subscribe/coding-plan",
-    category: "official",
-    baseUrl: "https://api.minimax.io/v1",
     protocol: "chatCompletions",
     model: "MiniMax-M3",
     modelList: ["MiniMax-M3", "MiniMax-M2.7"],
@@ -275,16 +256,6 @@ export const PRESETS: ProviderPreset[] = [
     modelList: ["Pro/MiniMaxAI/MiniMax-M2.7"],
   },
   {
-    id: "openrouter",
-    name: "OpenRouter",
-    websiteUrl: "https://openrouter.ai",
-    apiKeyUrl: "https://openrouter.ai/keys",
-    category: "aggregator",
-    baseUrl: "https://openrouter.ai/api/v1",
-    protocol: "chatCompletions",
-    model: "gpt-5.5",
-  },
-  {
     id: "aihubmix",
     name: "AiHubMix",
     category: "aggregator",
@@ -322,16 +293,6 @@ export const PRESETS: ProviderPreset[] = [
     websiteUrl: "https://therouter.ai",
   },
   {
-    id: "novita",
-    name: "Novita AI",
-    category: "aggregator",
-    baseUrl: "https://api.novita.ai/openai/v1",
-    protocol: "chatCompletions",
-    model: "zai-org/glm-5.1",
-    modelList: ["zai-org/glm-5.1"],
-    websiteUrl: "https://novita.ai",
-  },
-  {
     id: "shengsuanyun",
     name: "Shengsuanyun",
     category: "aggregator",
@@ -351,13 +312,4 @@ export const PRESETS: ProviderPreset[] = [
   },
 
   // ── 第三方 ──
-  {
-    id: "azure",
-    name: "Azure OpenAI",
-    category: "third_party",
-    baseUrl: "https://YOUR_RESOURCE_NAME.openai.azure.com/openai",
-    protocol: "responses",
-    model: "gpt-5.5",
-    websiteUrl: "https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/codex",
-  },
 ];

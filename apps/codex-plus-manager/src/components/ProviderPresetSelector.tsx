@@ -47,7 +47,8 @@ export function createPresetPatch(preset: ProviderPreset): PresetPatch {
     model: preset.model,
     testModel: preset.model,
     modelList: preset.modelList?.join("\n") ?? "",
-    relayMode: preset.category === "official" ? "official" : "pureApi",
+    // 本定制版只内置国内模型渠道，全部走纯 API 中转模式
+    relayMode: "pureApi",
     officialMixApiKey: false,
     hideOfficialUsageAlert: false,
   };

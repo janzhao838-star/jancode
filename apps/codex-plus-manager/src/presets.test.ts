@@ -3,34 +3,27 @@ import { describe, it, test } from "node:test";
 import { PRESETS } from "./presets.ts";
 
 describe("provider presets", () => {
-  it("keeps MiniMax China and global credentials in separate presets", () => {
-    const china = PRESETS.find((preset) => preset.id === "minimax");
-    const global = PRESETS.find((preset) => preset.id === "minimax-global");
+  it("内置渠道全部面向国内模型，不含国外预设", () => {
+    // 本定制版的产品定位是国内模型聚合中转站，国外厂商预设已被移除。
+    // 这条断言是回归守卫：以后若有人误加回国外预设，测试会立刻失败。
+    const foreignIds = ["openai", "minimax-global", "openrouter", "novita", "azure"];
+    const found = PRESETS.filter((preset) => foreignIds.includes(preset.id)).map((p) => p.id);
+    assert.deepStrictEqual(found, [], `不应存在国外预设，但发现：${found.join(", ")}`);
 
-    assert.deepStrictEqual(china, {
-      id: "minimax",
-      name: "MiniMax (China)",
-      websiteUrl: "https://platform.minimaxi.com",
-      apiKeyUrl: "https://platform.minimaxi.com/subscribe/coding-plan",
-      category: "cn_official",
-      baseUrl: "https://api.minimaxi.com/v1",
-      protocol: "chatCompletions",
-      model: "MiniMax-M3",
-      modelList: ["MiniMax-M3", "MiniMax-M2.7"],
-    });
-
-    assert.deepStrictEqual(global, {
-      id: "minimax-global",
-      name: "MiniMax (Global)",
-      websiteUrl: "https://platform.minimax.io",
-      apiKeyUrl: "https://platform.minimax.io/subscribe/coding-plan",
-      category: "official",
-      baseUrl: "https://api.minimax.io/v1",
-      protocol: "chatCompletions",
-      model: "MiniMax-M3",
-      modelList: ["MiniMax-M3", "MiniMax-M2.7"],
-    });
+    // 分类只允许国内官方与聚合两类
+    const categories = [...new Set(PRESETS.map((p) => p.category))].sort();
+    assert.deepStrictEqual(categories, ["aggregator", "cn_official"]);
   });
+
+  it("自建中转站预设排在预设列表最前面", () => {
+    // 用户自有站点应当一眼可见，避免每次都要往下翻找。
+    const firstThree = PRESETS.slice(0, 3).map((p) => p.id);
+    assert.deepStrictEqual(firstThree, ["aionclaw", "junzi-ai", "janzhao-dgx-gateway"]);
+    const aionclaw = PRESETS[0];
+    assert.equal(aionclaw.baseUrl, "https://router.aionclaw.com/v1");
+    assert.ok(aionclaw.modelList && aionclaw.modelList.length > 0, "AionClaw 预设应带模型清单");
+  });
+});
 
 test("DeepSeek preset uses the official Responses integration", () => {
   const preset = PRESETS.find((candidate) => candidate.id === "deepseek");
@@ -49,5 +42,4 @@ test("GrooRoute preset uses the configured sponsor endpoint", () => {
   assert.equal(preset.protocol, "responses");
   assert.equal(preset.model, "gpt-5.5");
   assert.equal(preset.apiKeyUrl, "https://grooroute.com/register?aff=2B3KJR5SRNTX");
-});
 });
