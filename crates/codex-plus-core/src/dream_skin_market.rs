@@ -240,7 +240,7 @@ fn validate_market_theme(theme: &DreamSkinMarketTheme) -> anyhow::Result<()> {
 fn market_http_client() -> anyhow::Result<reqwest::Client> {
     Ok(reqwest::Client::builder()
         .user_agent(format!(
-            "CodexPlusPlus-Themes/{}",
+            "JanCode-Themes/{}",
             env!("CARGO_PKG_VERSION")
         ))
         .connect_timeout(Duration::from_secs(8))
