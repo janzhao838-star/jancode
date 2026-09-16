@@ -382,8 +382,8 @@ export const EN_PLAIN: Record<string, string> = {
   "该工具的配置在它自己的页签里管理；上面的基础设置对所有工具通用。":
     "This tool is configured on its own tab; the basic settings above apply to every tool.",
   "赞助商推荐": "Sponsor recommendations",
-  "内容来自 BigPizzaV3/Ad-List，含置顶推荐与普通推荐。":
-    "Content comes from BigPizzaV3/Ad-List, including the pinned and regular recommendations.",
+  "本版本未接入远程推荐源，如需要请自行在设置中配置。":
+    "This build ships without a remote recommendation feed; configure one in settings if needed.",
   "普通推荐内容": "General recommendations",
   "有未保存修改。": "Unsaved changes.",
   "每个供应商对应一套 Base URL + API Key + 模型列表。":

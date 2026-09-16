@@ -8,13 +8,12 @@ use codex_plus_core::ads::{
 use serde_json::json;
 
 #[test]
-fn default_ad_urls_match_legacy_helper_sources() {
-    assert_eq!(
-        DEFAULT_AD_LIST_URLS,
-        [
-            "https://raw.githubusercontent.com/BigPizzaV3/Ad-List/main/ads.json",
-            "https://cdn.jsdelivr.net/gh/BigPizzaV3/Ad-List@main/ads.json",
-        ]
+fn default_ad_urls_stay_empty() {
+    // JanCode 不展示远程广告，也不在启动时向第三方 CDN 报到。
+    // 上游更新若把作者自己的广告源带回来，这条会立刻失败。
+    assert!(
+        DEFAULT_AD_LIST_URLS.is_empty(),
+        "不应存在默认远程广告源，当前为 {DEFAULT_AD_LIST_URLS:?}",
     );
 }
 

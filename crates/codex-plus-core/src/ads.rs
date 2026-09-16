@@ -13,10 +13,15 @@ const APIMART_IMAGE: &[u8] = include_bytes!("../../../docs/images/sponsor-apimar
 const FENNO_AI_IMAGE: &[u8] = include_bytes!("../../../docs/images/sponsor-fenno-ai.png");
 const QINIU_AI_IMAGE: &[u8] = include_bytes!("../../../docs/images/sponsor-qiniu-ai.png");
 
-pub const DEFAULT_AD_LIST_URLS: [&str; 2] = [
-    "https://raw.githubusercontent.com/BigPizzaV3/Ad-List/main/ads.json",
-    "https://cdn.jsdelivr.net/gh/BigPizzaV3/Ad-List@main/ads.json",
-];
+/// JanCode 不拉取任何远程广告源。
+///
+/// 上游把这些地址指向作者自己的仓库（BigPizzaV3/Ad-List），应用每次启动都会去
+/// 拉一次广告并展示作者的付费赞助位。对自用品牌来说这是两件都不该发生的事：
+/// 界面给别人的赞助商打工，启动还要向对方 CDN 报到一次。
+///
+/// 置空后 `fetch_ad_list()` 会返回 Err("ad list unavailable")，
+/// 界面按「暂无推荐」处理，不会 panic。
+pub const DEFAULT_AD_LIST_URLS: [&str; 0] = [];
 
 pub fn normalize_ad_payload(payload: Value) -> Value {
     let version = payload.get("version").and_then(Value::as_u64).unwrap_or(1);

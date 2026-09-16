@@ -831,7 +831,11 @@ fn injection_script_fetches_ads_without_bridge() {
     assert!(script.contains("directFetchCodexPlusAds"));
     assert!(script.contains("cacheBustCodexPlusAdUrl"));
     assert!(script.contains("Date.now()"));
-    assert!(script.contains("BigPizzaV3/Ad-List"));
+    // JanCode 不拉取远程广告源：注入脚本里不应再出现上游作者仓库的地址。
+    assert!(
+        !script.contains("BigPizzaV3/Ad-List"),
+        "注入脚本不应包含上游广告源地址，否则会在 Codex 界面展示作者的赞助位",
+    );
     assert!(
         !script.contains("codexPlusAds = normalizeCodexPlusAds(await postJson(\"/ads\", {}));")
     );

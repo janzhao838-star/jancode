@@ -4079,10 +4079,11 @@
   }
 
   async function directFetchCodexPlusAds() {
-    const urls = [
-      "https://raw.githubusercontent.com/BigPizzaV3/Ad-List/main/ads.json",
-      "https://cdn.jsdelivr.net/gh/BigPizzaV3/Ad-List@main/ads.json",
-    ];
+    // JanCode 不拉取远程广告源。上游指向作者自己的仓库，会在 Codex 界面里
+    // 展示作者的付费赞助位，且每次启动都向对方 CDN 报到一次。
+    // 置空后本条与 Rust 侧的 fetch_ad_list 都会抛出 "ad list unavailable"，
+    // 调用方按「暂无推荐」处理。
+    const urls = [];
     let lastError = null;
     const cacheBust = Date.now();
     for (const url of urls) {
