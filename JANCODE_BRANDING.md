@@ -80,7 +80,64 @@
 - `apps/codex-plus-manager/src-tauri/tauri.conf.json`：`productName`、`identifier`、窗口标题、`assetProtocol` 作用域（随数据目录）
 - 图标资源全部替换为 JanCode 图标（`src-tauri/icons/icon.png`、`icon.ico`、`assets/images/jancode.{png,ico}`）
 
-### 7. 构建与发布链
+### 7. 视觉识别：配色与图标
+
+- `apps/codex-plus-manager/src/styles.css`：`:root,.dark` 与 `.light` 两套色板整体替换为自建站点色系
+  - 主色 `--brand-accent` `252 90% 68%`（#7c5cff 紫）、辅色 `--brand-accent-2` `189 100% 50%`（#00d8ff 青）
+  - 底色 `232 33% 5%`（#080910），卡片 `230 31% 11.5%`，外壳 `232 36% 4%`
+  - 语义色沿用：成功 `158 60% 58%`、警告 `45 100% 51%`
+- 图标改为机器人造型（`branding/jancode-icon.svg`）：紫→青 135° 线性渐变圆角方块，
+  以 mask 挖出机器人轮廓（天线、双耳、头部）与内部的眼睛、嘴部栅格，挖空处透出底层渐变。
+  由该 SVG 渲染出 1024² 母版，再派生 `jancode-512.png`、`jancode.ico`（16/32/48/64/128/256 七种尺寸）
+  与 `jancode.icns`；分发到 `src-tauri/icons/`、`assets/images/`。
+  旧的字形图标备份于 `branding/archive/jancode-icon-letterform.{svg,png}.bak`。
+
+### 8. 内置供应商预设的调整
+
+- `apps/codex-plus-manager/src/presets.ts`：
+  - **移除全部国外厂商预设**（`openai`、`minimax-global`、`openrouter`、`novita`、`azure`）。
+    本定制版定位为面向国内模型的中转客户端，不再提供国外直连渠道。
+  - `PresetCategory` 收窄为 `"aggregator" | "cn_official"`。
+  - 自建站点预设排到列表最前：`aionclaw`（router.aionclaw.com）、`junzi-ai`（charlene.cat:9090）、
+    `janzhao-dgx-gateway`（ai.janzhao.cn:9090）。
+- `apps/codex-plus-manager/src/presets.test.ts`：改为「国内渠道回归守卫」——
+  断言不存在国外预设 id、分类集合恰为两类、自建站点占据前三。
+- `components/ProviderPresetSelector.tsx`：`official` 分类分支随之移除，恒走 `pureApi` 中转模式。
+
+### 9. 一键接入脚本（客户端侧）
+
+面向最终用户的命令行接入工具，与上游无关，为本定制版新增：
+
+- `scripts/setup-jancode.sh`（macOS / Linux）
+- `scripts/setup-jancode.ps1`（Windows）
+
+行为约定：
+
+1. URL 归一化为以 `/v1` 结尾；`POST /v1/responses` 探活。
+   返回 401/403 视为密钥无效，**直接中止且不改动任何既有配置**；404 说明该端点不提供
+   Responses 协议，中止并提示（Codex 26.901 起不接受 `wire_api = "chat"`，写了会让整份
+   config.toml 失效并回退内置默认模型，因此不能降级为 chat 了事）。
+2. 写入前把 `config.toml` 与 `auth.json` 备份为 `*.bak.<时间戳>`。
+3. 生成的 config.toml 保证合法：**根级键（`model` / `model_provider`）必须排在所有 `[section]` 之前**，
+   `[model_providers.<id>]` 表追加到文件末尾。否则 TOML 语义会把用户原有的根级配置吞进 provider 表。
+4. 用 `# ── JanCode 接入配置（…）──` 与 `# ── JanCode 接入配置结束 ──` 成对标记圈定托管区，
+   重复执行只替换托管区，幂等且不重复追加。
+5. `auth.json` 以 0600 权限写入；同步 `~/.jancode/settings.json` 的 `relayProfiles`（同 id 覆盖，不新增重复项）。
+
+### 10. 技能中心面板
+
+- `apps/codex-plus-manager/src/skills-library.ts`：内置技能库与触发词匹配引擎（纯数据 + 纯函数）。
+  12 个面向中文开发场景的技能，每个含名称、说明、触发词、中文提示词正文；区分常用与进阶。
+  匹配规则：中英文触发词、大小写不敏感、中英文标点插入不影响命中、命中强度按触发词数量与
+  具体程度累加、同分按 id 升序保证稳定、无命中返回空数组。
+- `components/SkillsCenterPanel.tsx`：两个标签页——「技能库」（浏览/搜索/启用，专家模式切换）
+  与「触发测试」（输入任务描述，实时显示命中技能与强度）。设计参考 ZeroCode 的技能系统。
+- `App.tsx`：`skills` 路由此前已在 `Route` 类型中声明，但从未出现在任何导航组与渲染分支中，
+  属上游未接线的空壳；本次补齐导航项、分组、渲染分支与副标题。
+- 技能启用状态存于 webview `localStorage`（键前缀 `jancode.skills.`）。未写入 `BackendSettings`，
+  以免为此改动 Rust 结构体的 serde 定义与 `Default` 实现、牵连既有 settings 测试。
+
+### 11. 构建与发布链
 
 - `apps/codex-plus-launcher/Cargo.toml`：`[[bin]] name = "jancode"`
 - `apps/codex-plus-manager/src-tauri/Cargo.toml`：`[[bin]] name = "jancode-manager"`
@@ -88,7 +145,7 @@
 - `.github/workflows/{release-assets,pr-build}.yml`：产物名 `JanCode-<版本>-<平台>.<ext>`
 - `Cargo.toml` 工作区 `repository` 指向 JanCode 仓库
 
-### 8. 上游缺陷修复（非品牌改动）
+### 12. 上游缺陷修复（非品牌改动）
 
 `crates/codex-plus-core/src/settings.rs` — `impl Default for BackendSettings`
 

@@ -5,7 +5,15 @@ VERSION="${1:-0.0.0}"
 ARCH="${2:-$(uname -m)}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 DIST="$ROOT/dist/macos"
-STAGE="$DIST/stage"
+
+# ★ 本地构建修复：暂存区必须放在文件提供程序（iCloud 云盘 / ~/Documents 等）的托管范围之外。
+#
+# 托管目录的内容一经变动，守护进程会**异步**把 com.apple.fileprovider.fpfs#P、
+# com.apple.FinderInfo 等扩展属性补回目录本身。codesign 对 .app 整包签名时遇到这类
+# 属性会直接拒绝（"resource fork, Finder information, or similar detritus not allowed"）。
+# 由于补属性是异步的，xattr -cr 清理与 codesign 检查会形成竞态，表现为时好时坏、
+# 且每次报错的 app 都可能不同——只靠反复清理无法根治。放到 /tmp 下即彻底绕开。
+STAGE="$(mktemp -d "${TMPDIR:-/tmp}/jancode-stage.XXXXXX")"
 BINARY_DIR="${BINARY_DIR:-$ROOT/target/release}"
 DMG="$DIST/JanCode-${VERSION}-macos-${ARCH}.dmg"
 ICON_SOURCE="$ROOT/apps/codex-plus-manager/src-tauri/icons/icon.png"
@@ -216,6 +224,10 @@ cleanup_dmg_work_dir() {
   fi
   rm -f "$DMG_WORK_PATH"
   rmdir "$DMG_WORK_DIR" 2>/dev/null || true
+  # 暂存区在临时目录中，退出时清掉，避免残留已签名的 .app
+  if [ -n "${STAGE:-}" ] && [ -d "$STAGE" ]; then
+    rm -rf "$STAGE"
+  fi
 }
 
 trap cleanup_dmg_work_dir EXIT
