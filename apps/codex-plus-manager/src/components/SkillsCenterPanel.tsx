@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Power, PowerOff, Search, Star } from "lucide-react";
 import { t } from "@/i18n";
+import { BUILTIN_ROLES, activeRole, type Role } from "../roles-library";
+import { CAPABILITY_TOGGLES } from "../capability-toggles";
 import {
   BUILTIN_SKILLS,
   matchSkills,
@@ -25,6 +27,7 @@ import {
 
 const ENABLED_STORAGE_KEY = "jancode.skills.enabled";
 const EXPERT_STORAGE_KEY = "jancode.skills.expert";
+const ROLE_STORAGE_KEY = "jancode.roles.selected";
 
 function loadEnabledIds(): Set<string> {
   try {
@@ -85,8 +88,15 @@ const inputStyle: React.CSSProperties = {
   fontSize: 14,
 };
 
-export function SkillsCenterPanel() {
-  const [tab, setTab] = useState<"library" | "tester">("library");
+
+export function SkillsCenterPanel({
+  settings,
+  onToggleCapability,
+}: {
+  settings?: Record<string, unknown> | null;
+  onToggleCapability?: (field: string, next: boolean) => void;
+}) {
+  const [tab, setTab] = useState<"library" | "tester" | "roles" | "toggles">("library");
   const [expertMode, setExpertMode] = useState(false);
   const [enabledIds, setEnabledIds] = useState<Set<string>>(new Set());
   const [keyword, setKeyword] = useState("");
@@ -142,15 +152,23 @@ export function SkillsCenterPanel() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         <button type="button" style={chipStyle(tab === "library")} onClick={() => setTab("library")}>
-          技能库
+          {t("技能库")}
         </button>
         <button type="button" style={chipStyle(tab === "tester")} onClick={() => setTab("tester")}>
-          触发测试
+          {t("触发测试")}
+        </button>
+        <button type="button" style={chipStyle(tab === "roles")} onClick={() => setTab("roles")}>
+          {t("角色库")}
+        </button>
+        <button type="button" style={chipStyle(tab === "toggles")} onClick={() => setTab("toggles")}>
+          {t("能力开关")}
         </button>
         <span style={{ flex: 1 }} />
-        <button type="button" style={chipStyle(expertMode)} onClick={toggleExpertMode}>
-          {expertMode ? t("专家模式：开") : t("专家模式：关")}
-        </button>
+        {tab === "library" ? (
+          <button type="button" style={chipStyle(expertMode)} onClick={toggleExpertMode}>
+            {expertMode ? t("专家模式：开") : t("专家模式：关")}
+          </button>
+        ) : null}
       </div>
 
       {tab === "library" ? (
@@ -203,9 +221,17 @@ export function SkillsCenterPanel() {
             </div>
           )}
         </>
-      ) : (
+      ) : null}
+
+      {tab === "tester" ? (
         <TriggerTester value={probeText} onChange={setProbeText} matches={probeMatches} />
-      )}
+      ) : null}
+
+      {tab === "roles" ? <RoleGallery /> : null}
+
+      {tab === "toggles" ? (
+        <CapabilityToggles settings={settings ?? null} onToggle={onToggleCapability} />
+      ) : null}
     </div>
   );
 }
@@ -245,7 +271,7 @@ function SkillCard({
               color: "hsl(var(--status-warning))",
             }}
           >
-            进阶
+            {t("进阶")}
           </span>
         ) : null}
       </div>
@@ -367,6 +393,185 @@ function TriggerTester({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function RoleGallery() {
+  const [selected, setSelected] = useState("");
+  const [roles] = useState<Role[]>(BUILTIN_ROLES);
+
+  useEffect(() => {
+    try {
+      setSelected(window.localStorage.getItem(ROLE_STORAGE_KEY) ?? "");
+    } catch {
+      setSelected("");
+    }
+  }, []);
+
+  const choose = useCallback((id: string) => {
+    // 角色是单选：再点一次已选中的角色表示取消选择
+    setSelected((previous) => {
+      const next = previous === id ? "" : id;
+      try {
+        window.localStorage.setItem(ROLE_STORAGE_KEY, next);
+      } catch {
+        /* 存储不可用只影响下次打开的记忆 */
+      }
+      return next;
+    });
+  }, []);
+
+  const current = activeRole(selected, roles);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", lineHeight: 1.6 }}>
+        {t("选择一个角色作为回答的立场与口吻。角色是单选——同一时刻只有一个生效，再点一次可取消。")}
+      </div>
+
+      <div style={{ ...panelStyle, padding: 12, fontSize: 13 }}>
+        {current ? (
+          <>
+            {t("当前角色：")}
+            <strong>{current.name}</strong>
+            <span style={{ color: "hsl(var(--muted-foreground))" }}> — {current.summary}</span>
+          </>
+        ) : (
+          <span style={{ color: "hsl(var(--muted-foreground))" }}>
+            {t("当前未指定角色。")}
+          </span>
+        )}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+        {roles.map((role) => {
+          const isActive = role.id === selected;
+          return (
+            <button
+              key={role.id}
+              type="button"
+              onClick={() => choose(role.id)}
+              style={{
+                ...panelStyle,
+                textAlign: "left",
+                cursor: "pointer",
+                borderColor: isActive ? "hsl(var(--brand-accent))" : "hsl(var(--border))",
+                background: isActive
+                  ? "linear-gradient(135deg, hsl(var(--brand-accent) / 0.14), hsl(var(--brand-accent-2) / 0.14))"
+                  : "hsl(var(--card))",
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <strong style={{ fontSize: 14, flex: 1, color: "hsl(var(--foreground))" }}>{role.name}</strong>
+                {isActive ? (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      background: "linear-gradient(135deg, hsl(var(--brand-accent)), hsl(var(--brand-accent-2)))",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("生效中")}
+                  </span>
+                ) : null}
+              </div>
+              <div style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", lineHeight: 1.55 }}>
+                {role.summary}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CapabilityToggles({
+  settings,
+  onToggle,
+}: {
+  settings: Record<string, unknown> | null;
+  onToggle?: (field: string, next: boolean) => void;
+}) {
+  if (!settings) {
+    return (
+      <div style={{ ...panelStyle, color: "hsl(var(--muted-foreground))", fontSize: 14 }}>
+        {t("正在读取设置…")}
+      </div>
+    );
+  }
+
+  const masterOff = settings.enhancementsEnabled === false;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", lineHeight: 1.6 }}>
+        {t("这些开关直接写入 JanCode 设置文件。总开关关闭时，其余增强功能即使勾选也不会生效。")}
+      </div>
+
+      {masterOff ? (
+        <div
+          style={{
+            ...panelStyle,
+            padding: 12,
+            fontSize: 13,
+            borderColor: "hsl(var(--status-warning))",
+            color: "hsl(var(--status-warning))",
+          }}
+        >
+          {t("增强总开关已关闭，下面的开关当前不会生效。")}
+        </div>
+      ) : null}
+
+      {CAPABILITY_TOGGLES.map((item) => {
+        const value = settings[item.field] === true;
+        const isMaster = item.field === "enhancementsEnabled";
+        const dimmed = masterOff && !isMaster;
+        return (
+          <div
+            key={item.field}
+            style={{
+              ...panelStyle,
+              padding: 12,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              opacity: dimmed ? 0.55 : 1,
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>
+                {item.title}
+                {isMaster ? (
+                  <span style={{ fontSize: 11, color: "hsl(var(--muted-foreground))", marginLeft: 8 }}>
+                    {t("总开关")}
+                  </span>
+                ) : null}
+              </div>
+              <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 4 }}>
+                {item.summary}
+              </div>
+              <div style={{ fontSize: 11, color: "hsl(var(--muted-foreground))", marginTop: 4, fontFamily: "monospace" }}>
+                {item.field}
+              </div>
+            </div>
+            <button
+              type="button"
+              disabled={!onToggle}
+              onClick={() => onToggle?.(item.field, !value)}
+              style={{ ...chipStyle(value), cursor: onToggle ? "pointer" : "not-allowed" }}
+            >
+              {value ? t("已开启") : t("已关闭")}
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 }

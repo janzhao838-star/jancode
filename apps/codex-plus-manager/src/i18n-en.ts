@@ -1174,7 +1174,19 @@ export const EN_PLAIN: Record<string, string> = {
   "❌ 批量描述解析失败（单图测试不应触发）":
     "❌ Batch description parse failed (should not trigger for single-image tests)",
   "❌ HTTP 客户端构建失败": "❌ Failed to build the HTTP client",
-  "❌ 未知错误": "❌ Unknown error",
+  "❌ 未知错误": "❌ Unknown error",  "角色库": "Roles",
+  "能力开关": "Capability toggles",
+  "选择一个角色作为回答的立场与口吻。角色是单选——同一时刻只有一个生效，再点一次可取消。": "Pick a role to set the stance and tone of answers. Roles are single-select; only one is active at a time. Click again to clear.",
+  "当前角色：": "Active role: ",
+  "当前未指定角色。": "No role selected.",
+  "生效中": "Active",
+  "正在读取设置…": "Loading settings…",
+  "这些开关直接写入 JanCode 设置文件。总开关关闭时，其余增强功能即使勾选也不会生效。": "These toggles write straight to the JanCode settings file. While the master switch is off, the other enhancements stay inactive even if checked.",
+  "增强总开关已关闭，下面的开关当前不会生效。": "The master enhancements switch is off, so the toggles below have no effect right now.",
+  "总开关": "Master",
+  "已开启": "On",
+  "已关闭": "Off",
+
 };
 
 // Interpolated strings: tf("前缀 {0}", [x]) -> EN_TEMPLATE["前缀 {0}"] with {0} filled.

@@ -3571,7 +3571,18 @@ export function App() {
             <ZedRemoteScreen projects={zedRemoteProjects} form={settingsForm} onFormChange={setSettingsForm} actions={actions} />
           ) : null}
           {route === "userScripts" ? <UserScriptsScreen settings={settings} market={scriptMarket} actions={actions} /> : null}
-          {route === "skills" ? <SkillsCenterPanel /> : null}
+          {route === "skills" ? (
+            <SkillsCenterPanel
+              settings={settingsForm}
+              onToggleCapability={(field, next) => {
+                // 与 EnhanceScreen 的 setPersistedEnhanceFlag 保持同一手法：
+                // 先更新本地表单让界面立即响应，再落盘。
+                const updated = { ...settingsForm, [field]: next } as BackendSettings;
+                setSettingsForm(updated);
+                void actions.saveSettingsValue(updated, true);
+              }}
+            />
+          ) : null}
           {route === "recommendations" ? <RecommendationsScreen ads={ads} actions={actions} /> : null}
           {route === "maintenance" ? (
             <MaintenanceScreen
