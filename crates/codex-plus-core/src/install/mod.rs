@@ -283,6 +283,31 @@ where
         .map(|arg| arg.as_ref().to_os_string())
         .collect::<Vec<OsString>>();
 
+    // 测试进程里不真的启动。
+    //
+    // 起因：桥接路由 open_transient_manager 会调这个函数启动真实 manager，
+    // 而测试会打到那个路由。结果每跑一次 cargo test 就留下一个孤儿
+    // jancode-manager 进程，它占着单实例锁（回环端口），之后启动**安装版**
+    // 只会记一条 manager.already_running——窗口不出现、无任何提示，
+    // 表现为「双击没反应」。
+    //
+    // 实测：跑测试前 0 个 jancode 进程，跑完后 1 个。
+    //
+    // 自动跳过而不是让测试自己声明：要求每个测试记得声明，实际结果就是
+    // 「写了的隔离了，没写的污染，新加的默认是污染的」。
+    if crate::paths::running_under_cargo_test() {
+        let path = companion_binary_path(binary);
+        let _ = crate::diagnostic_log::append_diagnostic_log(
+            "companion.spawn_skipped_in_test",
+            serde_json::json!({
+                "binary": binary,
+                "args": args.iter().map(|a| a.to_string_lossy().to_string()).collect::<Vec<_>>(),
+                "would_spawn": path.to_string_lossy(),
+            }),
+        );
+        return Ok(path.to_string_lossy().to_string());
+    }
+
     #[cfg(target_os = "macos")]
     {
         let exe = std::env::current_exe().unwrap_or_else(|_| PathBuf::from("."));

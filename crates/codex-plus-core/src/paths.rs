@@ -28,7 +28,7 @@ pub const APP_STATE_DIR_ENV: &str = "JANCODE_STATE_DIR";
 /// 为什么自动判断而不是让每个测试自己声明：core 的集成测试有 771 个。
 /// 要求每个测试自己隔离，结果就是「写了的人隔离了，没写的人污染，
 /// 新加的测试默认是污染的」——这个坑已经踩过一次。
-fn running_under_cargo_test() -> bool {
+pub fn running_under_cargo_test() -> bool {
     static CACHED: OnceLock<bool> = OnceLock::new();
     *CACHED.get_or_init(|| {
         std::env::current_exe()
