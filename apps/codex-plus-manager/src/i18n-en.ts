@@ -645,7 +645,6 @@ export const EN_PLAIN: Record<string, string> = {
   "打开": "Open",
   "打开链接": "Open link",
   "打开关于": "Open About",
-  "打开项目主页": "Open project homepage",
   "扩展项": "entry",
   "批量删除会话": "Bulk delete sessions",
   "把 JanCode 菜单插入 Codex 顶部原生菜单栏。": "Insert the JanCode menu into Codex's top native menu bar.",
@@ -1186,6 +1185,8 @@ export const EN_PLAIN: Record<string, string> = {
   "总开关": "Master",
   "已开启": "On",
   "已关闭": "Off",
+  "JanCode 基于开源项目 CodexPlusPlus 定制重命名，遵循 GNU AGPL-3.0 许可。上游版权归其作者所有；本定制版的应用名称、图标、界面文案与数据目录为 JanCode 自有。AGPL-3.0 要求：分发本软件或通过网络提供其服务时，必须同时向使用者提供本修改版的完整对应源码，并保留上游署名。下方「本版源码」即为该源码的获取地址。": "JanCode is a rebranded build of the open-source CodexPlusPlus, licensed under GNU AGPL-3.0. Upstream copyright stays with its authors; the JanCode name, icon, UI copy and data directory belong to this build. AGPL-3.0 requires that distributing this software, or offering it over a network, comes with the complete corresponding source of this modified version and with upstream attribution preserved. The \"This build's source\" link below points at that source.",
+  "本版源码": "This build's source",
 
 };
 
