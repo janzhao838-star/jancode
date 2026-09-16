@@ -34,12 +34,34 @@ test("DeepSeek preset uses the official Responses integration", () => {
   assert.deepEqual(preset.modelList, ["deepseek-v4-flash", "deepseek-v4-pro"]);
 });
 
-test("GrooRoute preset uses the configured sponsor endpoint", () => {
-  const preset = PRESETS.find((candidate) => candidate.id === "grooroute");
-  assert.ok(preset);
-  assert.equal(preset.name, "GrooRoute");
-  assert.equal(preset.baseUrl, "https://grooroute.com");
-  assert.equal(preset.protocol, "responses");
-  assert.equal(preset.model, "gpt-5.5");
-  assert.equal(preset.apiKeyUrl, "https://grooroute.com/register?aff=2B3KJR5SRNTX");
+test("预设里不允许出现任何推广码", () => {
+  // 上游仓库的预设带着作者自己的推广链接（注册别人的账号会把返利算给上游作者，
+  // 而不是本站）。这类参数混在 apiKeyUrl / websiteUrl 里很难一眼看出，
+  // 所以这里统一守住，上游更新时万一重新带进来也会立刻失败。
+  const AFFILIATE_PATTERNS = [/[?&]aff=/, /\/i\/[A-Za-z0-9]+/, /[?&]ref=/, /referral/i, /invite/i];
+
+  for (const preset of PRESETS) {
+    for (const field of ["apiKeyUrl", "websiteUrl", "baseUrl"] as const) {
+      const value = preset[field];
+      if (!value) continue;
+      for (const pattern of AFFILIATE_PATTERNS) {
+        assert.ok(
+          !pattern.test(value),
+          `${preset.id} 的 ${field} 带有推广参数（${value}），会把客户的注册返利算给第三方`,
+        );
+      }
+    }
+  }
+});
+
+test("不提供国外聚合站预设", () => {
+  // 需求是「只做国内模型」。GrooRoute 这类国外聚合站提供的是 GPT 系列，
+  // 与要求冲突，已整条移除；这条守住它不会被上游更新带回来。
+  for (const id of ["grooroute", "openai", "openrouter", "novita", "azure", "minimax-global"]) {
+    assert.equal(
+      PRESETS.find((preset) => preset.id === id),
+      undefined,
+      `${id} 是国外供应商，不应出现在预设里`,
+    );
+  }
 });

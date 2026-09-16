@@ -336,9 +336,36 @@ Write-Host ""
 Write-Host "──────────────────────────────────────────────"
 Write-Ok "接入完成！"
 Write-Host ""
-Write-Host "接下来："
-Write-Host "  1. 完全退出并重新打开 Codex 桌面版（配置在启动时读取）"
-Write-Host "  2. 在 Codex 里就能选用刚才配置的模型了"
+# 检测是否已经装了能用这份配置的客户端。
+# 脚本即使客户端没装也会成功（配置目录是本脚本建的），但那样客户拿到配置却无处可用，
+# 只会以为是自己配错了。所以这里如实告知，而不是假装一切正常。
+$Client = $null
+if (Get-Command codex -ErrorAction SilentlyContinue) {
+  $Client = 'codex 命令行'
+} else {
+  $candidates = @(
+    (Join-Path $env:LOCALAPPDATA 'Programs\JanCode\jancode-manager.exe'),
+    (Join-Path $env:LOCALAPPDATA 'Programs\Codex\Codex.exe'),
+    (Join-Path $env:LOCALAPPDATA 'Programs\ChatGPT\ChatGPT.exe')
+  )
+  foreach ($candidate in $candidates) {
+    if ($candidate -and (Test-Path -LiteralPath $candidate)) { $Client = $candidate; break }
+  }
+}
+
+if ($Client) {
+  Write-Host "接下来："
+  Write-Host "  1. 完全退出并重新打开 Codex 桌面版（配置在启动时读取）"
+  Write-Host "  2. 在 Codex 里就能选用刚才配置的模型了"
+} else {
+  Write-Warn "没有检测到你电脑上装有 Codex 客户端。"
+  Write-Host ""
+  Write-Host "配置已经写好了，但要装上客户端才能用上它："
+  Write-Host "  · Codex 桌面版，或"
+  Write-Host "  · JanCode 桌面版"
+  Write-Host ""
+  Write-Host "装好之后直接打开即可使用，配置不需要再改一次。"
+}
 Write-Host ""
 Write-Dim "  配置文件：$ConfigFile"
 Write-Dim "  密钥文件：$AuthFile"

@@ -32,6 +32,18 @@ warn() { printf '%s[注意]%s %s\n' "$C_WARN" "$C_RST" "$1"; }
 err()  { printf '%s[错误]%s %s\n' "$C_ERR"  "$C_RST" "$1" >&2; }
 dim()  { printf '%s%s%s\n' "$C_DIM" "$1" "$C_RST"; }
 
+# 检测是否已经装了能用这份配置的客户端。
+# 脚本即使客户端没装也会成功（配置目录是本脚本建的），但那样客户拿到配置却无处可用，
+# 只会以为是自己配错了。所以这里如实告知，而不是假装一切正常。
+detect_client() {
+  command -v codex >/dev/null 2>&1 && { printf 'codex 命令行'; return 0; }
+  for app in "/Applications/Codex.app" "/Applications/ChatGPT.app" \
+             "$HOME/Applications/Codex.app" "$HOME/Applications/JanCode.app"; do
+    [ -d "$app" ] && { printf '%s' "$app"; return 0; }
+  done
+  return 1
+}
+
 # ── 参数解析 ─────────────────────────────────────────────────
 BASE_URL=""
 API_KEY=""
@@ -400,9 +412,21 @@ echo
 printf '%s\n' "──────────────────────────────────────────────"
 ok "接入完成！"
 echo
-echo "接下来："
-echo "  1. 完全退出并重新打开 Codex 桌面版（配置在启动时读取）"
-echo "  2. 在 Codex 里就能选用刚才配置的模型了"
+CLIENT="$(detect_client)" || CLIENT=""
+
+if [ -n "$CLIENT" ]; then
+  echo "接下来："
+  echo "  1. 完全退出并重新打开 Codex 桌面版（配置在启动时读取）"
+  echo "  2. 在 Codex 里就能选用刚才配置的模型了"
+else
+  warn "没有检测到你电脑上装有 Codex 客户端。"
+  echo
+  echo "配置已经写好了，但要装上客户端才能用上它："
+  echo "  · Codex 桌面版，或"
+  echo "  · JanCode 桌面版"
+  echo
+  echo "装好之后直接打开即可使用，配置不需要再改一次。"
+fi
 echo
 dim "  配置文件：$CONFIG_FILE"
 dim "  密钥文件：$AUTH_FILE"
