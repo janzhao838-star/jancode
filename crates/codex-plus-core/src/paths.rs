@@ -15,6 +15,15 @@ const SKILL_BACKUPS_DIR: &str = "skill-backups";
 const PENDING_MANAGER_NAVIGATION_FILE: &str = "pending-manager-navigation.json";
 
 pub fn default_app_state_dir() -> PathBuf {
+    // 测试可整体重定向状态目录。之所以在「目录」这一层做覆盖、而不是给每个
+    // 文件单独开覆盖：日志、skills、pending-* 这些都是从状态目录派生的，
+    // 逐个补必然漏。漏掉的那个就会写进用户真实目录——诊断日志就是这么漏的，
+    // 结果测试产生的记录混进 ~/.jancode/jancode.log，让排查的人把测试数据
+    // 当成真实使用记录。
+    if let Some(dir) = app_state_dir_for_tests() {
+        return dir;
+    }
+
     if let Some(home_dir) = directories::BaseDirs::new().map(|dirs| dirs.home_dir().to_path_buf()) {
         return home_dir.join(APP_STATE_DIR);
     }
@@ -78,6 +87,26 @@ fn settings_path_for_tests() -> Option<PathBuf> {
 
 static SETTINGS_PATH_FOR_TESTS: OnceLock<Mutex<Option<PathBuf>>> = OnceLock::new();
 
+fn app_state_dir_for_tests() -> Option<PathBuf> {
+    APP_STATE_DIR_FOR_TESTS
+        .get_or_init(|| Mutex::new(None))
+        .lock()
+        .ok()
+        .and_then(|path| path.clone())
+}
+
+static APP_STATE_DIR_FOR_TESTS: OnceLock<Mutex<Option<PathBuf>>> = OnceLock::new();
+
+/// 把整个状态目录重定向到临时目录，返回此前的值以便还原。
+/// 测试里应当用它，而不是让日志、skills 等写进用户真实的 ~/.jancode。
+pub fn set_app_state_dir_for_tests(path: Option<PathBuf>) -> Option<PathBuf> {
+    APP_STATE_DIR_FOR_TESTS
+        .get_or_init(|| Mutex::new(None))
+        .lock()
+        .ok()
+        .and_then(|mut current| std::mem::replace(&mut *current, path))
+}
+
 #[cfg(test)]
 static SETTINGS_PATH_TEST_GUARD: OnceLock<Mutex<()>> = OnceLock::new();
 
@@ -100,6 +129,40 @@ pub fn set_settings_path_for_tests(path: Option<PathBuf>) -> Option<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn app_state_dir_can_be_redirected_for_tests() {
+        // 测试不该写进用户真实目录。这里验证重定向真的生效，
+        // 而且是从状态目录这一层生效——日志、skills 等派生路径一并被带走。
+        //
+        // 必须拿 guard：状态目录是全局状态，并行测试之间会互相污染。
+        // 第一次写这条测试时没拿，结果是另一个依赖状态目录的测试随机失败。
+        let _guard = settings_path_test_guard();
+        let previous = set_app_state_dir_for_tests(Some(PathBuf::from("/tmp/jancode-test-state")));
+
+        assert_eq!(
+            default_app_state_dir(),
+            PathBuf::from("/tmp/jancode-test-state")
+        );
+        // 关键：派生路径也要跟着走
+        assert!(default_diagnostic_log_path().starts_with("/tmp/jancode-test-state"));
+        assert!(default_skills_source_dir().starts_with("/tmp/jancode-test-state"));
+        assert!(default_pending_provider_import_path().starts_with("/tmp/jancode-test-state"));
+        // 真实目录的影子不该出现在任何派生出���路径里
+        for path in [
+            default_app_state_dir(),
+            default_diagnostic_log_path(),
+            default_skills_source_dir(),
+        ] {
+            assert!(
+                !path.to_string_lossy().contains("/.jancode"),
+                "重定向后不该再指向真实状态目录：{}",
+                path.display()
+            );
+        }
+
+        set_app_state_dir_for_tests(previous);
+    }
 
     #[test]
     fn default_settings_path_uses_app_state_directory() {
