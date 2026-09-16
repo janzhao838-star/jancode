@@ -29,7 +29,10 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: apps/codex-plus-manager
-        run: npm install --package-lock=false
+        # 仓库提交了 package-lock.json，必须用 npm ci 严格按锁文件安装：
+        # --package-lock=false 会忽略锁文件，导致 CI 装的依赖版本与本地不一致，
+        # Windows 与 macOS 两边的构建产物可能因此不同，问题还很难复现。
+        run: npm ci
 
       - name: Build frontend
         working-directory: apps/codex-plus-manager
@@ -103,7 +106,10 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: apps/codex-plus-manager
-        run: npm install --package-lock=false
+        # 仓库提交了 package-lock.json，必须用 npm ci 严格按锁文件安装：
+        # --package-lock=false 会忽略锁文件，导致 CI 装的依赖版本与本地不一致，
+        # Windows 与 macOS 两边的构建产物可能因此不同，问题还很难复现。
+        run: npm ci
 
       - name: Build frontend
         working-directory: apps/codex-plus-manager
