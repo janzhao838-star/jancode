@@ -83,6 +83,30 @@ function Normalize-Url {
 }
 $Url = Normalize-Url $Url
 
+# ── 地址格式校验 ─────────────────────────────────────────────
+# 必须在 -SkipCheck 之前做：跳过的是「连线校验」，不是「格式校验」。
+# 少了这一步，用户把地址打错一个字也会被静默写成一份无法使用的配置。
+if ($Url -notmatch '^https?://') {
+  Write-Err "中转站地址必须以 http:// 或 https:// 开头。"
+  Write-Err "你给的是：$Url"
+  Write-Err "正确示例：https://router.aionclaw.com/v1"
+  exit 1
+}
+$urlRest = $Url -replace '^https?://', ''
+$urlHost = ($urlRest -split '/')[0]
+if ([string]::IsNullOrWhiteSpace($urlHost)) {
+  Write-Err "中转站地址缺少主机名：$Url"
+  exit 1
+}
+if ($urlHost -match '\s') {
+  Write-Err "中转站地址中含空格，请给参数加引号：-Url 'https://...'"
+  exit 1
+}
+if ($urlHost -notmatch '[A-Za-z0-9]') {
+  Write-Err "中转站地址格式不正确：$Url"
+  exit 1
+}
+
 if ([string]::IsNullOrWhiteSpace($Key) -and -not $List) {
     Write-Err "缺少 -Key 参数（API Key）"
     Write-Host ""; Show-Usage; exit 1

@@ -97,6 +97,36 @@ if [ -z "$BASE_URL" ]; then
 fi
 BASE_URL="$(normalize_url "$BASE_URL")"
 
+# ── 地址格式校验 ─────────────────────────────────────────────
+# 必须在 --skip-check 之前做：跳过的是「连线校验」，不是「格式校验」。
+# 少了这一步，用户把地址打错一个字（例如漏掉 https://）也会被静默写成一份
+# 无法使用的配置，直到打开 Codex 才报错，排查成本很高。
+case "$BASE_URL" in
+  http://*|https://*) : ;;
+  *)
+    err "中转站地址必须以 http:// 或 https:// 开头。"
+    err "你给的是：$BASE_URL"
+    err "正确示例：https://router.aionclaw.com/v1"
+    exit 1
+    ;;
+esac
+# 去掉协议后必须还有主机名
+_url_rest="${BASE_URL#*://}"
+_url_host="${_url_rest%%/*}"
+if [ -z "$_url_host" ]; then
+  err "中转站地址缺少主机名：$BASE_URL"
+  exit 1
+fi
+# 主机名里不允许出现空格（常见于参数没加引号被拆开）
+case "$_url_host" in
+  *" "*) err "中转站地址中含空格，请给参数加引号：--url 'https://...'"; exit 1 ;;
+esac
+# 形如 https:///v1 的情况
+case "$_url_host" in
+  "") err "中转站地址格式不正确：$BASE_URL"; exit 1 ;;
+esac
+unset _url_rest _url_host
+
 if [ -z "$API_KEY" ] && [ "$SHOW_LIST" -eq 0 ]; then
   err "缺少 --key 参数（API Key）"
   echo; usage; exit 1
