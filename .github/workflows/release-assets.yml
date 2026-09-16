@@ -3,6 +3,16 @@ name: Release assets
 on:
   release:
     types: [published]
+  # 允许手动触发。加这条的原因：原先只有 release 触发，而本仓库从未发布过
+  # release，结果 Windows 构建**从来没有真正跑过**——工作流写得再对，
+  # 不触发就等于不存在。手动触发让「构建一个 Windows 包」变成随时可做的动作，
+  # 不必先造一个 release。
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（留空则用 workspace 里的版本）'
+        required: false
+        type: string
 
 permissions:
   contents: write
