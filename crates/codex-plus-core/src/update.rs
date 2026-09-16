@@ -9,9 +9,9 @@ use serde_json::{Value, json};
 //   当成"新版本"下载并覆盖自己，品牌与定制改动会被抹掉。
 //   在 JanCode 自己的仓库发布 release（含 latest.json）后，把下面两行改成对应地址即可；
 //   也可以在不改代码的情况下设置环境变量 JANCODE_UPDATE_REPOSITORY / JANCODE_LATEST_JSON_URL 覆盖。
-pub const DEFAULT_REPOSITORY: &str = "janzhao/jancode";
+pub const DEFAULT_REPOSITORY: &str = "janzhao838-star/jancode";
 pub const DEFAULT_LATEST_JSON_URL: &str =
-    "https://github.com/janzhao/jancode/releases/latest/download/latest.json";
+    "https://github.com/janzhao838-star/jancode/releases/latest/download/latest.json";
 const UPDATE_CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
 const UPDATE_DOWNLOAD_TIMEOUT: Duration = Duration::from_secs(600);
 

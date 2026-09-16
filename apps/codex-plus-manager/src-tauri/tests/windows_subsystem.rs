@@ -343,15 +343,46 @@ fn relay_preview_deduplicates_root_keys_when_merging_common_config() {
 }
 
 #[test]
-fn provider_presets_include_runapi() {
+fn provider_presets_stay_domestic() {
+    // 这条测试原本断言 runapi 预设存在。该预设是国外模型聚合站（默认 gpt-5.5），
+    // 与「只做国内模型」的要求冲突，已整条移除，因此断言改为反向。
+    //
+    // 注意判断方式：早前用「id 是否在我列的名单里」来查国外预设，漏掉了 9 个
+    // 不叫 openai 但默认模型是 gpt-5.5 的聚合站。这里改为按性质判断——
+    // 默认模型本身不能是国外模型。
     let manifest_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let presets = manifest_dir.parent().unwrap().join("src/presets.ts");
     let presets = std::fs::read_to_string(&presets).expect("read manager presets.ts");
 
-    assert!(presets.contains("id: \"runapi\""));
-    assert!(presets.contains("name: \"RunAPI\""));
-    assert!(presets.contains("category: \"aggregator\""));
-    assert!(presets.contains("baseUrl: \"https://runapi.host/v1\""));
+    for removed in ["runapi", "jojocode", "aihubmix", "pkeyfun", "pateway", "therouter"] {
+        assert!(
+            !presets.contains(&format!("id: \"{removed}\"")),
+            "国外模型聚合站 {removed} 不应出现在预设里",
+        );
+    }
+
+    // 自建站与国内厂商必须仍在
+    for kept in ["aionclaw", "junzi-ai", "deepseek", "zhipu-glm", "kimi", "bailian"] {
+        assert!(
+            presets.contains(&format!("id: \"{kept}\"")),
+            "国内预设 {kept} 不应被移除",
+        );
+    }
+
+    // 按性质兜底：预设里的默认模型不得匹配国外模型特征
+    let foreign = ["gpt-", "claude", "gemini", "grok"];
+    for line in presets.lines() {
+        let line = line.trim();
+        if !line.starts_with("model:") {
+            continue;
+        }
+        for bad in foreign {
+            assert!(
+                !line.contains(bad),
+                "预设默认模型含国外模型特征：{line}",
+            );
+        }
+    }
 }
 
 #[test]

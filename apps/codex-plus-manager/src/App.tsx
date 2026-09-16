@@ -6583,18 +6583,18 @@ function AboutScreen({
           <div className="metric-list">
             <Metric label={t("JanCode 版本")} value={overview?.current_version ?? update?.currentVersion ?? "-"} />
             <Metric label={t("Codex 版本")} value={overview?.codex_version ?? t("未检测到")} />
-            <Metric label={t("项目地址")} value="github.com/janzhao/jancode" />
+            <Metric label={t("项目地址")} value="github.com/janzhao838-star/jancode" />
             <Metric label={t("上游项目")} value="CodexPlusPlus（AGPL-3.0）" />
           </div>
           <p className="text-muted-foreground text-xs leading-relaxed">
             {t("JanCode 基于开源项目 CodexPlusPlus 定制重命名，遵循 GNU AGPL-3.0 许可。上游版权归其作者所有；本定制版的应用名称、图标、界面文案与数据目录为 JanCode 自有。AGPL-3.0 要求：分发本软件或通过网络提供其服务时，必须同时向使用者提供本修改版的完整对应源码，并保留上游署名。下方「本版源码」即为该源码的获取地址。")}
           </p>
           <Toolbar>
-            <Button onClick={() => void actions.openExternalUrl("https://github.com/janzhao/jancode")} variant="secondary">
+            <Button onClick={() => void actions.openExternalUrl("https://github.com/janzhao838-star/jancode")} variant="secondary">
               <ExternalLink className="h-4 w-4" />
               {t("本版源码")}
             </Button>
-            <Button onClick={() => void actions.openExternalUrl("https://github.com/janzhao/jancode/issues")} variant="secondary">
+            <Button onClick={() => void actions.openExternalUrl("https://github.com/janzhao838-star/jancode/issues")} variant="secondary">
               <ExternalLink className="h-4 w-4" />
               {t("反馈问题")}
             </Button>
