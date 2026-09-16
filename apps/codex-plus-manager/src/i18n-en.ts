@@ -1079,7 +1079,6 @@ export const EN_PLAIN: Record<string, string> = {
   "搜索 Skill": "Search skills",
   "搜索名称、描述或仓库": "Search by name, description, or repository",
   "按安装状态筛选": "Filter by install state",
-  "全部": "All",
   "没有匹配的 Skill。": "No skills match your search.",
   "还没有拉到 Skill，点「刷新列表」试试。": "No skills loaded yet — try \"Refresh list\".",
   "Codex 内置": "Bundled with Codex",
@@ -1216,32 +1215,6 @@ export const EN_PLAIN: Record<string, string> = {
   "说明：本页只展示上游真实提供的信息（模型 id 与来源）。单价、延迟、吞吐这些中转站的 /v1/models 并不返回，因此这里不显示，也不做估算。":
     "Note: this page shows only what the upstream actually returns (model id and source). Unit prices, latency and throughput are not returned by /v1/models, so they are neither displayed nor estimated.",
 
-  // ── 智能体（src/components/AgentCenterPanel.tsx）──
-  "智能体": "Agents",
-  "选择回答的立场与口吻，可新建自己的智能体":
-    "Pick the stance and tone of answers; you can create your own agent",
-  "（副本）": " (copy)",
-  "当前生效的智能体": "Active agent",
-  "已复制": "Copied",
-  "复制提示词": "Copy prompt",
-  "查看全文": "View full text",
-  "取消生效": "Deactivate",
-  "还没有选择智能体。选一个作为回答的立场与口吻——同一时刻只有一个生效。":
-    "No agent selected yet. Pick one to set the stance and tone of answers — only one is active at a time.",
-  "选中还不等于生效：当前版本不会把角色自动写进 Codex。":
-    "Selecting is not the same as taking effect: this build does not write the role into Codex automatically.",
-  "要让它真正起作用，请点「复制提示词」，粘贴到 Codex 的自定义指令或 AGENTS.md 里。自动注入需要改动后端，尚未实现。":
-    "To make it actually apply, use “Copy prompt” and paste it into Codex's custom instructions or AGENTS.md. Automatic injection needs backend work and is not implemented yet.",
-  "搜索名称、说明或提示词…": "Search names, descriptions or prompts…",
-  "自定义": "Custom",
-  "新建智能体": "New agent",
-  "没有匹配的智能体。换个关键词，或切到「全部」。":
-    "No matching agents. Try another keyword, or switch to “All”.",
-  "已生效": "Active",
-  "选用": "Select",
-  "查看": "View",
-  "复制为副本": "Duplicate",
-  "编辑智能体": "Edit agent",
 
 };
 
@@ -1363,10 +1336,6 @@ export const EN_TEMPLATE: Record<string, string> = {
     "{0} model entries · {1} vendors · {2} providers",
   "（其中 {0} 个 id 被多个供应商同时提供）":
     " ({0} of these ids are offered by more than one provider)",
-  "名称（最多 {0} 个字）": "Name (up to {0} characters)",
-  "一句话说明（最多 {0} 个字）": "One-line description (up to {0} characters)",
-  "系统提示词（最多 {0} 个字，当前 {1}）":
-    "System prompt (up to {0} characters, currently {1})",
 };
 
 // Backend (Rust) messages returned via result.message. These are translated
