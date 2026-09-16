@@ -14,14 +14,24 @@ const SKILLS_DIR: &str = "skills";
 const SKILL_BACKUPS_DIR: &str = "skill-backups";
 const PENDING_MANAGER_NAVIGATION_FILE: &str = "pending-manager-navigation.json";
 
+/// 环境变量：把整个状态目录搬到别处。
+/// 两个用途——测试隔离（集成测试跑的是真实代码路径，不隔离就会把诊断日志
+/// 写进用户真实目录），以及让用户自行迁移数据目录。
+pub const APP_STATE_DIR_ENV: &str = "JANCODE_STATE_DIR";
+
 pub fn default_app_state_dir() -> PathBuf {
-    // 测试可整体重定向状态目录。之所以在「目录」这一层做覆盖、而不是给每个
-    // 文件单独开覆盖：日志、skills、pending-* 这些都是从状态目录派生的，
-    // 逐个补必然漏。漏掉的那个就会写进用户真实目录——诊断日志就是这么漏的，
-    // 结果测试产生的记录混进 ~/.jancode/jancode.log，让排查的人把测试数据
-    // 当成真实使用记录。
+    // 优先级：进程内测试覆盖 > 环境变量 > 家目录默认值。
+    //
+    // 之所以在「目录」这一层做覆盖、而不是给每个文件单独开：日志、skills、
+    // pending-* 全都是从状态目录派生的，逐个补必然漏。
     if let Some(dir) = app_state_dir_for_tests() {
         return dir;
+    }
+
+    if let Some(dir) = std::env::var_os(APP_STATE_DIR_ENV) {
+        if !dir.is_empty() {
+            return PathBuf::from(dir);
+        }
     }
 
     if let Some(home_dir) = directories::BaseDirs::new().map(|dirs| dirs.home_dir().to_path_buf()) {
